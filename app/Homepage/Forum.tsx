@@ -10,86 +10,116 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import MainLayout from "./MainLayout";
 
 export default function ForumScreen() {
   const navigation = useNavigation();
   const [activeTab, setActiveTab] = useState("Popular");
 
   const posts = [
-    { id: "1", user: "Username", comment: "Comment. Comment. Comment", likes: 123, comments: 35 },
-    { id: "2", user: "Username", comment: "Comment. Comment. Comment", likes: 123, comments: 35 },
-    { id: "3", user: "Username", comment: "Comment. Comment. Comment", likes: 123, comments: 35 },
+    {
+      id: "1",
+      user: "Username",
+      comment: "Comment. Comment. Comment",
+      likes: 123,
+      comments: 35,
+    },
+    {
+      id: "2",
+      user: "Username",
+      comment: "Comment. Comment. Comment",
+      likes: 123,
+      comments: 35,
+    },
+    {
+      id: "3",
+      user: "Username",
+      comment: "Comment. Comment. Comment",
+      likes: 123,
+      comments: 35,
+    },
   ];
 
   return (
-    <MainLayout>
-      <SafeAreaView style={styles.container}>
-        {/* Search Bar */}
-        <View style={styles.searchBar}>
-          <MaterialCommunityIcons name="magnify" size={20} color="#A1A8B0" />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search"
-            placeholderTextColor="#A1A8B0"
-          />
-        </View>
+    <SafeAreaView style={styles.container}>
+      {/* Search Bar */}
+      <View style={styles.searchBar}>
+        <MaterialCommunityIcons name="magnify" size={20} color="#A1A8B0" />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search"
+          placeholderTextColor="#A1A8B0"
+        />
+      </View>
 
-        {/* Tabs */}
-        <View style={styles.tabs}>
-          {["Popular", "My Posts", "My Comments"].map((tab) => (
-            <TouchableOpacity
-              key={tab}
-              style={[styles.tab, activeTab === tab && styles.activeTab]}
-              onPress={() => setActiveTab(tab)}
+      {/* Tabs */}
+      <View style={styles.tabs}>
+        {["Popular", "My Posts", "My Comments"].map((tab) => (
+          <TouchableOpacity
+            key={tab}
+            style={[styles.tab, activeTab === tab && styles.activeTab]}
+            onPress={() => setActiveTab(tab)}
+          >
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === tab && styles.activeTabText,
+              ]}
             >
-              <Text
-                style={[styles.tabText, activeTab === tab && styles.activeTabText]}
-              >
-                {tab}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+              {tab}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
 
-        {/* Posts */}
-        <FlatList
-          data={posts}
-          keyExtractor={(item) => item.id}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 180 }}
-          renderItem={({ item }) => (
-            <View style={styles.card}>
-              <View style={styles.cardHeader}>
-                <MaterialCommunityIcons name="account-circle" size={28} color="#000" />
-                <Text style={styles.username}>{item.user}</Text>
+      {/* Posts */}
+      <FlatList
+        data={posts}
+        keyExtractor={(item) => item.id}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 180 }}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <View style={styles.cardHeader}>
+              <MaterialCommunityIcons
+                name="account-circle"
+                size={28}
+                color="#000"
+              />
+              <Text style={styles.username}>{item.user}</Text>
+            </View>
+            <Text style={styles.comment}>{item.comment}</Text>
+            <View style={styles.actions}>
+              <View style={styles.iconGroup}>
+                <MaterialCommunityIcons
+                  name="heart-outline"
+                  size={18}
+                  color="#000"
+                />
+                <Text style={styles.iconText}>{item.likes}</Text>
               </View>
-              <Text style={styles.comment}>{item.comment}</Text>
-              <View style={styles.actions}>
-                <View style={styles.iconGroup}>
-                  <MaterialCommunityIcons name="heart-outline" size={18} color="#000" />
-                  <Text style={styles.iconText}>{item.likes}</Text>
-                </View>
-                <View style={styles.iconGroup}>
-                  <MaterialCommunityIcons name="comment-outline" size={18} color="#000" />
-                  <Text style={styles.iconText}>{item.comments}</Text>
-                </View>
+              <View style={styles.iconGroup}>
+                <MaterialCommunityIcons
+                  name="comment-outline"
+                  size={18}
+                  color="#000"
+                />
+                <Text style={styles.iconText}>{item.comments}</Text>
               </View>
             </View>
-          )}
-        />
+          </View>
+        )}
+      />
 
-        {/* Floating Add Comment Button */}
-        <TouchableOpacity
-          style={styles.floatingButton}
-          onPress={() => {
-            console.log("Add comment button pressed");
-          }}
-        >
-          <MaterialCommunityIcons name="plus" size={28} color="#fff" />
-        </TouchableOpacity>
-      </SafeAreaView>
-    </MainLayout>
+      {/* Floating Add Comment Button */}
+      <TouchableOpacity
+        style={styles.floatingButton}
+        onPress={() => {
+          console.log("Add comment button pressed");
+        }}
+      >
+        <MaterialCommunityIcons name="plus" size={28} color="#fff" />
+      </TouchableOpacity>
+    </SafeAreaView>
   );
 }
 
@@ -145,7 +175,6 @@ const styles = StyleSheet.create({
   iconGroup: { flexDirection: "row", alignItems: "center", marginRight: 24 },
   iconText: { marginLeft: 6, fontSize: 12, color: "#000" },
 
-  
   bottomNav: {
     flexDirection: "row",
     justifyContent: "space-around",
@@ -169,12 +198,16 @@ const styles = StyleSheet.create({
     marginTop: -35,
   },
   navLabel: { fontSize: 12, textAlign: "center", color: "#000", marginTop: 2 },
-  navLabelActive: { fontSize: 12, textAlign: "center", color: "#0B1956", marginTop: 2 },
+  navLabelActive: {
+    fontSize: 12,
+    textAlign: "center",
+    color: "#0B1956",
+    marginTop: 2,
+  },
 
-  
   floatingButton: {
     position: "absolute",
-    bottom: 90, 
+    bottom: 90,
     right: 20,
     width: 67,
     height: 68,

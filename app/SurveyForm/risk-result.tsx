@@ -1,6 +1,12 @@
 import { useRouter } from "expo-router";
 import React, { useEffect } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 
 const RiskResult = ({
@@ -10,14 +16,49 @@ const RiskResult = ({
   onBack,
   fetchPred,
   loading,
+  predictionData,
+  insertFormData,
+  insertPrediction,
+  updateUsername,
 }: any) => {
   const router = useRouter();
 
   useEffect(() => {
     // Fetch prediction when component mounts
+    updateUsername();
     fetchPred();
+    insertFormData();
   }, []);
 
+  useEffect(() => {
+    if (predictionData) {
+      insertPrediction(predictionData);
+    }
+  }, [predictionData]);
+
+  if (loading || !predictionData) {
+    return (
+      <View style={[styles.container, styles.centerContent]}>
+        <ActivityIndicator size="large" color="#ffffff" />
+        <Text style={[styles.subtitle, { marginTop: 20 }]}>
+          Analyzing your health data...
+        </Text>
+      </View>
+    );
+  }
+
+  const percent = Math.floor(predictionData.percent);
+  const color = () => {
+    if (percent < 20) return "#16A34A"; // Green
+    if (percent < 50) return "#EAB308";
+    return "#DC2626"; // Red
+  };
+
+  const riskLevel = () => {
+    if (percent < 20) return "low";
+    if (percent < 50) return "moderate";
+    return "high";
+  };
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Your Diabetes Risk Result</Text>
@@ -30,19 +71,19 @@ const RiskResult = ({
         <AnimatedCircularProgress
           size={160}
           width={10}
-          fill={80}
-          tintColor="#0B1956"
+          fill={percent}
+          tintColor={color()}
           backgroundColor="#E5E7EB"
           rotation={0}
           lineCap="round"
         >
           {(fill: number) => (
-            <Text style={styles.percentText}>{`${Math.round(fill)}%`}</Text>
+            <Text style={styles.percentText}>{`${Math.floor(fill)}%`}</Text>
           )}
         </AnimatedCircularProgress>
 
         {/* Risk Level */}
-        <Text style={styles.levelText}>Risk Level: moderate</Text>
+        <Text style={styles.levelText}>Risk Level: {riskLevel()}</Text>
 
         {/* Description */}
         <Text style={styles.description}>
@@ -70,6 +111,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#0B1956",
     alignItems: "center",
     paddingTop: 120,
+  },
+  centerContent: {
+    justifyContent: "center",
+    paddingTop: 0, // Reset padding when centering spinner
   },
   title: {
     fontSize: 20,

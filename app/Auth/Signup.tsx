@@ -4,15 +4,15 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
-    ActivityIndicator,
-    Alert,
-    Image,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 const profile_images = [
@@ -29,7 +29,7 @@ export default function SignUp() {
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
   const [email, setEmail] = useState("");
-  const [fullName, setFullName] = useState(""); 
+  const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -51,7 +51,6 @@ export default function SignUp() {
     try {
       setLoading(true);
 
-      
       const { data, error } = await supabase.auth.signUp({
         email: email.trim(),
         password,
@@ -62,13 +61,12 @@ export default function SignUp() {
         return;
       }
 
-      
       const userId = data?.user?.id;
       if (userId) {
         const newUser: Partial<UserDB> = {
           email: email.trim(),
           name: fullName.trim(),
-          profile_picture: profile_images[Math.floor(Math.random() * 5)]
+          profile_picture: profile_images[Math.floor(Math.random() * 5)],
         };
 
         const { error: insertError } = await supabase
@@ -80,11 +78,13 @@ export default function SignUp() {
         }
       }
 
-      
       router.replace("/Auth/PrivacyAgreement");
     } catch (err: any) {
       console.error("Signup error:", err);
-      Alert.alert("Sign up failed", err?.message || "An unexpected error occurred.");
+      Alert.alert(
+        "Sign up failed",
+        err?.message || "An unexpected error occurred."
+      );
     } finally {
       setLoading(false);
     }
@@ -94,7 +94,10 @@ export default function SignUp() {
     <ScrollView contentContainerStyle={styles.container}>
       {/* Header: Back Button & Logo */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.push("/get-started")} style={styles.backBtn}>
+        <TouchableOpacity
+          onPress={() => router.push("/get-started")}
+          style={styles.backBtn}
+        >
           <Text style={styles.backArrow}>←</Text>
         </TouchableOpacity>
         <Text style={styles.logo}>
@@ -181,7 +184,11 @@ export default function SignUp() {
         style={[styles.registerBtn, loading && { opacity: 0.7 }]}
         disabled={loading}
       >
-        {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.registerText}>Register</Text>}
+        {loading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.registerText}>Register</Text>
+        )}
       </TouchableOpacity>
 
       {/* Divider */}
@@ -198,14 +205,6 @@ export default function SignUp() {
           style={styles.socialIcon}
         />
         <Text style={styles.socialText}>Sign in with Google</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.socialBtn}>
-        <Image
-          source={require("../../assets/images/thesis-illus/facebook.png")}
-          style={styles.socialIcon}
-        />
-        <Text style={styles.socialText}>Sign in with Facebook</Text>
       </TouchableOpacity>
 
       {/* Already have account */}
@@ -339,6 +338,7 @@ const styles = StyleSheet.create({
   footerContainer: {
     flexDirection: "row",
     marginTop: 15,
+    marginBottom: 50,
   },
   footerText: {
     fontSize: 15,

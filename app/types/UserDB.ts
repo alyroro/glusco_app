@@ -10,4 +10,11 @@ export interface UserDB {
   role: string;
 }
 
+export interface PredictionData {
+  clinical: number;
+  lifestyle: number;
+  combined: number;
+  percent: number;
+}
+
 export default UserDB;

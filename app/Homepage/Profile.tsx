@@ -2,8 +2,14 @@ import supabase from "@/app/api/client";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
-import { Alert, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import MainLayout from "./MainLayout";
+import {
+  Alert,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -12,69 +18,72 @@ export default function ProfileScreen() {
     try {
       await supabase.auth.signOut();
     } catch (err) {
-    
       console.warn("Logout error:", err);
       Alert.alert("Error", "Could not log out. Try again.");
       return;
     }
-  
+
     router.replace("/get-started");
   };
 
   return (
-    <MainLayout>
-      <SafeAreaView style={styles.container}>
-        {/* Background */}
-        <View style={styles.topBackground} />
+    <SafeAreaView style={styles.container}>
+      {/* Background */}
+      <View style={styles.topBackground} />
 
-        {/* Bottom white section */}
-        <View style={styles.bottomSection} />
+      {/* Bottom white section */}
+      <View style={styles.bottomSection} />
 
-        {/* Profile Image */}
-        <View style={styles.profileImage} />
+      {/* Profile Image */}
+      <View style={styles.profileImage} />
 
-        {/* Edit Button */}
-        <TouchableOpacity style={styles.editButton}>
-          <MaterialCommunityIcons name="camera-outline" size={24} color="#000" />
-        </TouchableOpacity>
+      {/* Edit Button */}
+      <TouchableOpacity style={styles.editButton}>
+        <MaterialCommunityIcons name="camera-outline" size={24} color="#000" />
+      </TouchableOpacity>
 
-        {/* Username */}
-        <Text style={styles.username}>Username</Text>
+      {/* Username */}
+      <Text style={styles.username}>Username</Text>
 
-        {/* Options */}
-        <TouchableOpacity style={[styles.option, { top: 372 }]}>
-          <View style={styles.iconContainer}>
-            <MaterialCommunityIcons name="account-cog-outline" size={22} color="#000" />
-          </View>
-          <Text style={styles.optionText}>Account Settings</Text>
-          <MaterialCommunityIcons name="chevron-right" size={24} color="#555" />
-        </TouchableOpacity>
+      {/* Options */}
+      <TouchableOpacity style={[styles.option, { top: 372 }]}>
+        <View style={styles.iconContainer}>
+          <MaterialCommunityIcons
+            name="account-cog-outline"
+            size={22}
+            color="#000"
+          />
+        </View>
+        <Text style={styles.optionText}>Account Settings</Text>
+        <MaterialCommunityIcons name="chevron-right" size={24} color="#555" />
+      </TouchableOpacity>
 
-        <View style={[styles.divider, { top: 428 }]} />
+      <View style={[styles.divider, { top: 428 }]} />
 
-        <TouchableOpacity style={[styles.option, { top: 442 }]}>
-          <View style={styles.iconContainer}>
-            <MaterialCommunityIcons name="chart-bar" size={22} color="#000" />
-          </View>
-          <Text style={styles.optionText}>Progress Overview</Text>
-          <MaterialCommunityIcons name="chevron-right" size={24} color="#555" />
-        </TouchableOpacity>
+      <TouchableOpacity style={[styles.option, { top: 442 }]}>
+        <View style={styles.iconContainer}>
+          <MaterialCommunityIcons name="chart-bar" size={22} color="#000" />
+        </View>
+        <Text style={styles.optionText}>Progress Overview</Text>
+        <MaterialCommunityIcons name="chevron-right" size={24} color="#555" />
+      </TouchableOpacity>
 
-        <View style={[styles.divider, { top: 498 }]} />
+      <View style={[styles.divider, { top: 498 }]} />
 
-       
-        <TouchableOpacity style={[styles.option, { top: 513 }]} onPress={handleLogout}>
-          <View style={styles.iconContainer}>
-            <MaterialCommunityIcons name="logout" size={22} color="#000" />
-          </View>
-          <Text style={styles.optionText}>Log out</Text>
-          <MaterialCommunityIcons name="chevron-right" size={24} color="#555" />
-        </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.option, { top: 513 }]}
+        onPress={handleLogout}
+      >
+        <View style={styles.iconContainer}>
+          <MaterialCommunityIcons name="logout" size={22} color="#000" />
+        </View>
+        <Text style={styles.optionText}>Log out</Text>
+        <MaterialCommunityIcons name="chevron-right" size={24} color="#555" />
+      </TouchableOpacity>
 
-        <View style={[styles.divider, { top: 568 }]} />
-        <View style={[styles.divider, { top: 638 }]} />
-      </SafeAreaView>
-    </MainLayout>
+      <View style={[styles.divider, { top: 568 }]} />
+      <View style={[styles.divider, { top: 638 }]} />
+    </SafeAreaView>
   );
 }
 
@@ -89,7 +98,7 @@ const styles = StyleSheet.create({
   bottomSection: {
     position: "absolute",
     top: 322,
-    bottom: 0,              
+    bottom: 0,
     width: "100%",
     backgroundColor: "#F8F3ED",
   },
@@ -97,7 +106,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 112,
     left: "50%",
-    marginLeft: -65.5, 
+    marginLeft: -65.5,
     width: 131,
     height: 126,
     borderRadius: 9999,
@@ -107,7 +116,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 181,
     left: "50%",
-    marginLeft: 41, 
+    marginLeft: 41,
     width: 67,
     height: 68,
     borderRadius: 9999,

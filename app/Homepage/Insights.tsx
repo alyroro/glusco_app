@@ -8,76 +8,75 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import MainLayout from "./MainLayout";
 
 export default function InsightsScreen() {
   const navigation = useNavigation();
 
   return (
-    <MainLayout>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 120, paddingTop: 60 }} 
-      >
-        {/* Section: What You Can Do */}
-        <Text style={styles.sectionTitle}>What You Can Do</Text>
-        <View style={styles.cardRow}>
-          <View style={styles.actionCard}>
-            <Text style={styles.cardText}>Track your meals daily</Text>
-            <TouchableOpacity style={styles.doneButton}>
-              <Text style={styles.doneText}>Done</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.actionCard}>
-            <Text style={styles.cardText}>Drink 8 glasses of water</Text>
-            <TouchableOpacity style={styles.doneButton}>
-              <Text style={styles.doneText}>Done</Text>
-            </TouchableOpacity>
-          </View>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingBottom: 120, paddingTop: 60 }}
+    >
+      {/* Section: What You Can Do */}
+      <Text style={styles.sectionTitle}>What You Can Do</Text>
+      <View style={styles.cardRow}>
+        <View style={styles.actionCard}>
+          <Text style={styles.cardText}>Track your meals daily</Text>
+          <TouchableOpacity style={styles.doneButton}>
+            <Text style={styles.doneText}>Done</Text>
+          </TouchableOpacity>
         </View>
 
-        {/* Quick Health Tips */}
-        <Text style={styles.sectionTitle}>Quick Health Tips</Text>
-        <View style={styles.cardRow}>
-          <View style={styles.tipCard}>
-            <MaterialCommunityIcons name="cup-water" size={30} color="#446CC3" />
-            <Text style={styles.tipText}>Swap soda for water 3x this week</Text>
-          </View>
+        <View style={styles.actionCard}>
+          <Text style={styles.cardText}>Drink 8 glasses of water</Text>
+          <TouchableOpacity style={styles.doneButton}>
+            <Text style={styles.doneText}>Done</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
 
-          <View style={styles.tipCard}>
-            <MaterialCommunityIcons name="walk" size={30} color="#446CC3" />
-            <Text style={styles.tipText}>Aim for 20 minutes of walking today</Text>
-          </View>
+      {/* Quick Health Tips */}
+      <Text style={styles.sectionTitle}>Quick Health Tips</Text>
+      <View style={styles.cardRow}>
+        <View style={styles.tipCard}>
+          <MaterialCommunityIcons name="cup-water" size={30} color="#446CC3" />
+          <Text style={styles.tipText}>Swap soda for water 3x this week</Text>
         </View>
 
-        {/* Progress */}
-        <Text style={styles.sectionTitle}>Your Progress</Text>
-        <View style={styles.infoCard}>
-          <Text style={styles.infoText}>
-            You’ve reduced your risk by{" "}
-            <Text style={styles.highlight}>3%</Text> since last month!
+        <View style={styles.tipCard}>
+          <MaterialCommunityIcons name="walk" size={30} color="#446CC3" />
+          <Text style={styles.tipText}>
+            Aim for 20 minutes of walking today
           </Text>
         </View>
+      </View>
 
-        {/* Streaks */}
-        <Text style={styles.sectionTitle}>Streaks</Text>
-        <View style={styles.infoCard}>
-          <Text style={styles.infoText}>
-            You’ve logged healthy habits for{" "}
-            <Text style={styles.highlight}>5 days</Text> in a row!
-          </Text>
-        </View>
+      {/* Progress */}
+      <Text style={styles.sectionTitle}>Your Progress</Text>
+      <View style={styles.infoCard}>
+        <Text style={styles.infoText}>
+          You’ve reduced your risk by <Text style={styles.highlight}>3%</Text>{" "}
+          since last month!
+        </Text>
+      </View>
 
-        {/* Risk Factors */}
-        <Text style={styles.sectionTitle}>What Affects Your Risk</Text>
-        <View style={styles.infoCard}>
-          <Text style={styles.infoText}>
-            Glucose Levels: <Text style={styles.highlight}>45%</Text> Influence
-          </Text>
-        </View>
-      </ScrollView>
-    </MainLayout>
+      {/* Streaks */}
+      <Text style={styles.sectionTitle}>Streaks</Text>
+      <View style={styles.infoCard}>
+        <Text style={styles.infoText}>
+          You’ve logged healthy habits for{" "}
+          <Text style={styles.highlight}>5 days</Text> in a row!
+        </Text>
+      </View>
+
+      {/* Risk Factors */}
+      <Text style={styles.sectionTitle}>What Affects Your Risk</Text>
+      <View style={styles.infoCard}>
+        <Text style={styles.infoText}>
+          Glucose Levels: <Text style={styles.highlight}>45%</Text> Influence
+        </Text>
+      </View>
+    </ScrollView>
   );
 }
 

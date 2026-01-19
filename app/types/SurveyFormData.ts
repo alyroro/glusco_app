@@ -27,6 +27,7 @@ export interface SurveyFormData {
   physicalActivity: {
     exercise_times: number;
     exercise_duration: number;
+    exercise_types?: string[];
     sitting: number;
     main_activity: number;
     mode_of_transpo: number;

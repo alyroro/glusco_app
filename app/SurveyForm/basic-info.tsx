@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
 import {
+  ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -12,7 +13,7 @@ import {
   View,
 } from "react-native";
 
-export default function BasicInfo({ data, setFormData, onNext }: any) {
+export default function BasicInfo({ data, setFormData, onNext, loading }: any) {
   // const [selectedSex, setSelectedSex] = useState<string | null>(null);
   // const [recordsAccess, setRecordsAccess] = useState<string | null>(null);
 
@@ -409,7 +410,11 @@ export default function BasicInfo({ data, setFormData, onNext }: any) {
           </>
 
           <TouchableOpacity style={styles.continueButton} onPress={onNext}>
-            <Text style={styles.continueText}>Continue</Text>
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.continueText}>Continue</Text>
+            )}
           </TouchableOpacity>
         </View>
       </ScrollView>

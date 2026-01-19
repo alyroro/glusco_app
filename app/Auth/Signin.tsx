@@ -1,18 +1,17 @@
 import supabase from "@/app/api/client";
-import { UserDB } from "@/app/types/UserDB";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
-    ActivityIndicator,
-    Alert,
-    Image,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 export default function SignIn() {
@@ -32,69 +31,34 @@ export default function SignIn() {
     try {
       setLoading(true);
 
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { data: authData, error } = await supabase.auth.signInWithPassword({
         email: email.trim(),
         password,
       });
 
       if (error) {
-        Alert.alert("Login failed", error.message || "Unknown error");
+        Alert.alert(error.message || "Unknown error");
         return;
       }
 
-     
-      if (data?.user && !data?.session) {
-        Alert.alert(
-          "Confirm your email",
-          "Please confirm your email before signing in. Check your inbox."
-        );
+      const { data: hasAnswered, error: didNotAnswer } = await supabase
+        .from("user_formdata")
+        .select("*")
+        .eq("uuid", authData.user.id)
+        .single();
+
+      if (didNotAnswer) {
+        router.replace("/SurveyForm/SurveyForm");
         return;
       }
 
-      const userId = data?.user?.id;
-      if (userId) {
-        
-        const { data: profile, error: profileError } = await supabase
-          .from("users")
-          .select("*")
-          .eq("id", userId)
-          .single();
-
-        if (profileError) {
-          
-          const authUser = data.user;
-          const nameFromMeta =
-            
-            authUser?.user_metadata?.full_name ||
-            
-            authUser?.user_metadata?.name ||
-            undefined;
-
-          const newUser: Partial<UserDB> = {
-            id: userId,
-            email: email.trim(),
-            name: nameFromMeta,
-          };
-
-          const { error: insertError } = await supabase
-            .from("users")
-            .insert(newUser);
-
-          if (insertError) {
-          
-            console.warn("Failed to create user row:", insertError.message);
-          }
-        } else {
-          
-        }
-      }
-
-     
-      router.replace("/");
+      router.replace("/Homepage/Dashboard");
     } catch (err: any) {
-      
       console.error("Login error:", err);
-      Alert.alert("Login failed", err?.message || "An unexpected error occurred.");
+      Alert.alert(
+        "Login failed",
+        err?.message || "An unexpected error occurred.",
+      );
     } finally {
       setLoading(false);
     }
@@ -104,7 +68,10 @@ export default function SignIn() {
     <ScrollView contentContainerStyle={styles.container}>
       {/* Header: Back Button & Logo */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.push("/get-started")} style={styles.backBtn}>
+        <TouchableOpacity
+          onPress={() => router.push("/get-started")}
+          style={styles.backBtn}
+        >
           <Text style={styles.backArrow}>←</Text>
         </TouchableOpacity>
         <Text style={styles.logo}>
@@ -158,8 +125,16 @@ export default function SignIn() {
       </TouchableOpacity>
 
       {/* Login Button */}
-      <TouchableOpacity onPress={handleLogin} style={[styles.loginBtn, loading && { opacity: 0.7 }]} disabled={loading}>
-        {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.loginText}>Login</Text>}
+      <TouchableOpacity
+        onPress={handleLogin}
+        style={[styles.loginBtn, loading && { opacity: 0.7 }]}
+        disabled={loading}
+      >
+        {loading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.loginText}>Login</Text>
+        )}
       </TouchableOpacity>
 
       {/* Divider */}
@@ -178,18 +153,10 @@ export default function SignIn() {
         <Text style={styles.socialText}>Sign in with Google</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.socialBtn}>
-        <Image
-          source={require("../../assets/images/thesis-illus/facebook.png")}
-          style={styles.socialIcon}
-        />
-        <Text style={styles.socialText}>Sign in with Facebook</Text>
-      </TouchableOpacity>
-
       {/* Sign Up Link */}
       <View style={styles.footerContainer}>
         <Text style={styles.footerText}>Don’t have an account? </Text>
-        <TouchableOpacity onPress={() => router.push("/")}>
+        <TouchableOpacity onPress={handleLogin}>
           <Text style={styles.signUpText}>Sign Up</Text>
         </TouchableOpacity>
       </View>
