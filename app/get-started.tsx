@@ -4,7 +4,10 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function GetStartedScreen() {
   const router = useRouter();
-
+  console.log("ENV CHECK:", {
+    supabase: process.env.EXPO_PUBLIC_SUPABASE_URL ? "Loaded" : "MISSING",
+    gemini: process.env.EXPO_PUBLIC_GEMINI_API_KEY ? "Loaded" : "MISSING",
+  });
   return (
     <View style={styles.container}>
       {/* Logo */}

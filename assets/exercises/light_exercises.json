@@ -1,0 +1,166 @@
+{
+  "Light_Exercises": [
+    {
+      "id": 1,
+      "title": "casual walking (post-meal walk)",
+      "for": "Light",
+      "duration": "15 mins",
+      "total_exercises": 1,
+      "exercises": [
+        { "name": "steady walk", "time": "15:00" },
+        { "name": "rest", "time": "01:00" }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "stretching or yoga (flexibility and posture)",
+      "for": "Light",
+      "duration": "20 mins",
+      "total_exercises": 10,
+      "exercises": [
+        { "name": "neck tilt left", "time": "00:20" },
+        { "name": "rest", "time": "00:10" },
+        { "name": "neck tilt right", "time": "00:20" },
+        { "name": "rest", "time": "00:10" },
+        { "name": "shoulder rolls forward", "time": "00:20" },
+        { "name": "rest", "time": "00:10" },
+        { "name": "shoulder rolls backward", "time": "00:20" },
+        { "name": "rest", "time": "00:10" },
+        { "name": "cat-cow stretch", "time": "00:40" },
+        { "name": "rest", "time": "00:20" },
+        { "name": "seated forward bend", "time": "00:40" },
+        { "name": "rest", "time": "00:20" },
+        { "name": "side bend left", "time": "00:30" },
+        { "name": "rest", "time": "00:15" },
+        { "name": "side bend right", "time": "00:30" },
+        { "name": "rest", "time": "00:15" },
+        { "name": "downward dog hold", "time": "00:40" },
+        { "name": "rest", "time": "00:20" },
+        { "name": "child’s pose", "time": "01:00" },
+        { "name": "rest", "time": "00:30" }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "household chores or gardening (active chores)",
+      "for": "Light",
+      "duration": "25 mins",
+      "total_exercises": 5,
+      "exercises": [
+        { "name": "sweeping", "time": "05:00" },
+        { "name": "rest", "time": "00:30" },
+        { "name": "cleaning surfaces", "time": "05:00" },
+        { "name": "rest", "time": "00:30" },
+        { "name": "watering plants", "time": "05:00" },
+        { "name": "rest", "time": "00:30" },
+        { "name": "light raking", "time": "05:00" },
+        { "name": "rest", "time": "00:30" },
+        { "name": "planting or potting", "time": "05:00" },
+        { "name": "rest", "time": "00:30" }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "slow cycling (easy ride)",
+      "for": "Light",
+      "duration": "20 mins",
+      "total_exercises": 1,
+      "exercises": [
+        { "name": "steady cycling", "time": "20:00" },
+        { "name": "rest", "time": "01:00" }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "tai chi or slow breathing (relax and focus)",
+      "for": "Light",
+      "duration": "15 mins",
+      "total_exercises": 5,
+      "exercises": [
+        { "name": "deep breathing", "time": "01:00" },
+        { "name": "rest", "time": "00:20" },
+        { "name": "arm wave flow", "time": "02:00" },
+        { "name": "rest", "time": "00:20" },
+        { "name": "slow forward push", "time": "02:00" },
+        { "name": "rest", "time": "00:20" },
+        { "name": "side balance stance", "time": "02:00" },
+        { "name": "rest", "time": "00:20" },
+        { "name": "circular arm flow", "time": "02:00" },
+        { "name": "rest", "time": "00:30" }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "leisure swimming (gentle laps)",
+      "for": "Light",
+      "duration": "25 mins",
+      "total_exercises": 3,
+      "exercises": [
+        { "name": "easy front strokes", "time": "10:00" },
+        { "name": "rest", "time": "00:30" },
+        { "name": "side strokes", "time": "10:00" },
+        { "name": "rest", "time": "00:30" },
+        { "name": "floating relaxation", "time": "05:00" },
+        { "name": "rest", "time": "01:00" }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "slow dancing (soft rhythm movement)",
+      "for": "Light",
+      "duration": "20 mins",
+      "total_exercises": 1,
+      "exercises": [
+        { "name": "continuous slow dance", "time": "20:00" },
+        { "name": "rest", "time": "01:00" }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "gentle stair climbing (steady steps)",
+      "for": "Light",
+      "duration": "10 mins",
+      "total_exercises": 1,
+      "exercises": [
+        { "name": "stair climbing", "time": "10:00" },
+        { "name": "rest", "time": "00:30" }
+      ]
+    },
+    {
+      "id": 9,
+      "title": "walking the dog (steady stroll)",
+      "for": "Light",
+      "duration": "20 mins",
+      "total_exercises": 1,
+      "exercises": [
+        { "name": "continuous walking", "time": "20:00" },
+        { "name": "rest", "time": "01:00" }
+      ]
+    },
+    {
+      "id": 10,
+      "title": "light stretching or mobility drills (joint mobility)",
+      "for": "Light",
+      "duration": "10 mins",
+      "total_exercises": 8,
+      "exercises": [
+        { "name": "neck roll", "time": "00:20" },
+        { "name": "rest", "time": "00:10" },
+        { "name": "shoulder roll", "time": "00:20" },
+        { "name": "rest", "time": "00:10" },
+        { "name": "arm swing", "time": "00:30" },
+        { "name": "rest", "time": "00:10" },
+        { "name": "hip rotation", "time": "00:30" },
+        { "name": "rest", "time": "00:10" },
+        { "name": "knee circles", "time": "00:30" },
+        { "name": "rest", "time": "00:10" },
+        { "name": "ankle rotation", "time": "00:30" },
+        { "name": "rest", "time": "00:10" },
+        { "name": "torso twist", "time": "00:30" },
+        { "name": "rest", "time": "00:10" },
+        { "name": "deep breathing hold", "time": "00:50" },
+        { "name": "rest", "time": "00:30" }
+      ]
+    }
+  ]
+}

@@ -23,7 +23,7 @@ export default function PhysicalActivity({
 
       // RESET LOGIC: If user changes "Yes" to "No", clear the exercise-specific data
       if (questionId === "doesExercise" && value === 0) {
-        delete updatedActivity.exercise_types;
+        delete updatedActivity.exerciseTypes;
         delete updatedActivity.exercise_times;
         delete updatedActivity.exercise_duration;
       }
@@ -36,12 +36,12 @@ export default function PhysicalActivity({
   };
 
   const toggleExercise = (item: string) => {
-    const currentExercises = data.physicalActivity?.exercise_types || [];
+    const currentExercises = data.physicalActivity?.exerciseTypes || [];
     const newExercises = currentExercises.includes(item)
       ? currentExercises.filter((i: string) => i !== item)
       : [...currentExercises, item];
 
-    handleSelect("exercise_types", newExercises);
+    handleSelect("exerciseTypes", newExercises);
   };
 
   const exerciseOptions = [
@@ -63,11 +63,11 @@ export default function PhysicalActivity({
   const exerciseQuestions = [
     {
       id: "exercise_times",
-      question: "How often do you exercise?",
+      question: "How often did you exercise?",
       options: {
-        "1–2 times a week": 3,
-        "3–4 times a week": 2,
-        "5+ times a week": 1,
+        "1–2 times this week": 3,
+        "3–4 times this week": 2,
+        "5+ times this week": 1,
       },
     },
     {
@@ -85,7 +85,7 @@ export default function PhysicalActivity({
   const baseQuestions = [
     {
       id: "sitting",
-      question: "How many hours per day do you spend sitting?",
+      question: "How many hours per day did you spend sitting?",
       options: {
         "Less than 3 hours": 1,
         "3–6 hours": 2,
@@ -105,7 +105,7 @@ export default function PhysicalActivity({
     },
     {
       id: "mode_of_transpo",
-      question: "What is your primary mode of transportation?",
+      question: "What is your primary mode of transportation this week?",
       options: {
         Walking: 1,
         Biking: 2,
@@ -145,14 +145,14 @@ export default function PhysicalActivity({
           </View>
         </View>
 
-        <Text style={styles.title}>Let’s Check Your Activity Level</Text>
+        <Text style={styles.title}>How is your activity level this week?</Text>
         <Text style={styles.subtitle}>
           Tell us how often you stay active. Every step counts.
         </Text>
 
         {/* Question 1: ALWAYS VISIBLE */}
         <View style={styles.inputCard}>
-          <Text style={styles.label}>Do you exercise?</Text>
+          <Text style={styles.label}>Did you exercise?</Text>
           {["Yes", "No"].map((option) => {
             const val = option === "Yes" ? 1 : 2;
             return (
@@ -193,7 +193,7 @@ export default function PhysicalActivity({
                       <View
                         style={[
                           styles.checkbox,
-                          data.physicalActivity?.exercise_types?.includes(
+                          data.physicalActivity?.exerciseTypes?.includes(
                             item,
                           ) && styles.checkboxChecked,
                         ]}

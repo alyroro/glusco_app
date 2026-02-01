@@ -44,8 +44,7 @@ export default function SignIn() {
       const { data: hasAnswered, error: didNotAnswer } = await supabase
         .from("user_formdata")
         .select("*")
-        .eq("uuid", authData.user.id)
-        .single();
+        .eq("uuid", authData.user.id);
 
       if (didNotAnswer) {
         router.replace("/SurveyForm/SurveyForm");

@@ -1,12 +1,20 @@
 import { createClient } from "@supabase/supabase-js";
 import { Platform } from "react-native";
 
-export const SUPABASE_URL = "https://gvaujsnaspqbtqusdoio.supabase.co";
-export const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd2YXVqc25hc3BxYnRxdXNkb2lvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0NTk3NDksImV4cCI6MjA3NjAzNTc0OX0.D9qphno11fnbjb1uoRU_ykuaQ-qVqKhO55S40yf1C4U";
+import * as SecureStore from "expo-secure-store";
 
-export const SUPABASE_STORAGE =
-  "https://gvaujsnaspqbtqusdoio.supabase.co/storage/v1/object/public/";
+// Custom storage adapter for Expo
+const ExpoSecureStoreAdapter = {
+  getItem: (key: string) => {
+    return SecureStore.getItemAsync(key);
+  },
+  setItem: (key: string, value: string) => {
+    SecureStore.setItemAsync(key, value);
+  },
+  removeItem: (key: string) => {
+    SecureStore.deleteItemAsync(key);
+  },
+};
 
 // 1. Define a helper to get storage safely
 const getStorage = () => {
@@ -20,10 +28,12 @@ const getStorage = () => {
   return require("@react-native-async-storage/async-storage").default;
 };
 
+const supabase_url = process.env.EXPO_PUBLIC_SUPABASE_URL!;
+const supabase_anon_key = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!;
 // 2. Configure options
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+const supabase = createClient(supabase_url, supabase_anon_key, {
   auth: {
-    storage: getStorage(),
+    storage: ExpoSecureStoreAdapter,
     autoRefreshToken: true,
     persistSession: true,
     detectSessionInUrl: false,

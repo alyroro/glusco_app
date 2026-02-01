@@ -1,0 +1,159 @@
+{
+  "Vigorous_Exercises": [
+    {
+      "id": 1,
+      "name": "jogging or running",
+      "label": "endurance booster",
+      "intensity": "Vigorous",
+      "duration": "25 mins",
+      "exercises": [
+        { "activity": "warm-up walk", "time": "03:00" },
+        { "activity": "steady jog", "time": "05:00" },
+        { "activity": "run", "time": "10:00" },
+        { "activity": "slow jog cooldown", "time": "05:00" }
+      ],
+      "rest": "02:00"
+    },
+    {
+      "id": 2,
+      "name": "uphill cycling or hiking",
+      "label": "power climb",
+      "intensity": "Vigorous",
+      "duration": "30 mins",
+      "exercises": [
+        { "activity": "flat ride warm-up", "time": "05:00" },
+        { "activity": "uphill climb", "time": "15:00" },
+        { "activity": "steady ride/hike back down", "time": "08:00" }
+      ],
+      "rest": "02:00"
+    },
+    {
+      "id": 3,
+      "name": "jump rope or HIIT",
+      "label": "burst training",
+      "intensity": "Vigorous",
+      "duration": "20 mins",
+      "exercises": [
+        { "activity": "jump rope", "time": "00:40" },
+        { "activity": "rest", "time": "00:20" },
+        { "activity": "bodyweight squats", "time": "00:40" },
+        { "activity": "rest", "time": "00:20" },
+        { "activity": "push-ups", "time": "00:40" },
+        { "activity": "rest", "time": "00:20" },
+        { "activity": "mountain climbers", "time": "00:40" },
+        { "activity": "rest", "time": "00:20" },
+        { "activity": "jumping jacks", "time": "00:40" },
+        { "activity": "rest", "time": "00:20" }
+      ],
+      "note": "repeat circuit 3x"
+    },
+    {
+      "id": 4,
+      "name": "sports (basketball, badminton, soccer)",
+      "label": "dynamic cardio play",
+      "intensity": "Vigorous",
+      "duration": "40 mins",
+      "exercises": [
+        { "activity": "warm-up drills/passing", "time": "05:00" },
+        { "activity": "continuous play or rally", "time": "30:00" },
+        { "activity": "cooldown walking/stretch", "time": "05:00" }
+      ],
+      "rest": "02:00"
+    },
+    {
+      "id": 5,
+      "name": "stair sprinting",
+      "label": "leg power build",
+      "intensity": "Vigorous",
+      "duration": "15 mins",
+      "exercises": [
+        { "activity": "sprint up stairs", "time": "00:30" },
+        { "activity": "walk down", "time": "00:30" },
+        { "activity": "rest", "time": "00:30" }
+      ],
+      "note": "repeat 8 rounds; cooldown steps 03:00"
+    },
+    {
+      "id": 6,
+      "name": "kickboxing or martial arts",
+      "label": "power coordination",
+      "intensity": "Vigorous",
+      "duration": "25 mins",
+      "exercises": [
+        { "activity": "shadow punches", "time": "02:00" },
+        { "activity": "front kicks", "time": "02:00" },
+        { "activity": "combo drills", "time": "03:00" },
+        { "activity": "side kicks", "time": "02:00" },
+        { "activity": "defensive blocks", "time": "02:00" },
+        { "activity": "sparring/shadow round", "time": "10:00" }
+      ],
+      "rest": "02:00"
+    },
+    {
+      "id": 7,
+      "name": "running intervals",
+      "label": "sprint training",
+      "intensity": "Vigorous",
+      "duration": "20 mins",
+      "exercises": [
+        { "activity": "sprint 200m", "time": "00:40" },
+        { "activity": "rest walk", "time": "00:40" }
+      ],
+      "note": "repeat 8 rounds; cooldown jog 04:00"
+    },
+    {
+      "id": 8,
+      "name": "crossfit or circuit training",
+      "label": "full-body blast",
+      "intensity": "Vigorous",
+      "duration": "25 mins",
+      "exercises": [
+        { "activity": "burpees", "time": "00:45" },
+        { "activity": "rest", "time": "00:15" },
+        { "activity": "jump squats", "time": "00:45" },
+        { "activity": "rest", "time": "00:15" },
+        { "activity": "push-ups", "time": "00:45" },
+        { "activity": "rest", "time": "00:15" },
+        { "activity": "plank hold", "time": "00:45" },
+        { "activity": "rest", "time": "00:15" },
+        { "activity": "mountain climbers", "time": "00:45" },
+        { "activity": "rest", "time": "00:15" },
+        { "activity": "dumbbell rows", "time": "00:45" },
+        { "activity": "rest", "time": "00:15" }
+      ],
+      "note": "repeat circuit 2x"
+    },
+    {
+      "id": 9,
+      "name": "rowing",
+      "label": "endurance row",
+      "intensity": "Vigorous",
+      "duration": "25 mins",
+      "exercises": [
+        { "activity": "warm-up slow row", "time": "05:00" },
+        { "activity": "steady row", "time": "10:00" },
+        { "activity": "fast row", "time": "07:00" },
+        { "activity": "cooldown row", "time": "03:00" }
+      ],
+      "rest": "02:00"
+    },
+    {
+      "id": 10,
+      "name": "speed swimming",
+      "label": "aqua sprints",
+      "intensity": "Vigorous",
+      "duration": "20 mins",
+      "exercises": [
+        { "activity": "fast freestyle laps", "time": "01:00" },
+        { "activity": "rest", "time": "00:30" },
+        { "activity": "backstroke laps", "time": "01:00" },
+        { "activity": "rest", "time": "00:30" },
+        { "activity": "breaststroke laps", "time": "01:00" },
+        { "activity": "rest", "time": "00:30" },
+        { "activity": "freestyle recovery", "time": "01:00" },
+        { "activity": "rest", "time": "00:30" }
+      ],
+      "note": "repeat 2x; cooldown float/stretch 03:00"
+    }
+  ]
+}

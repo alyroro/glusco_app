@@ -1,0 +1,147 @@
+{
+  "Moderate_Exercises": [
+    {
+      "id": 1,
+      "name": "brisk walking",
+      "label": "steady cardio walk",
+      "intensity": "Moderate",
+      "duration": "30 mins",
+      "exercises": [{ "activity": "continuous brisk walk", "time": "30:00" }],
+      "rest": "01:00"
+    },
+    {
+      "id": 2,
+      "name": "cycling on flat terrain",
+      "label": "steady ride",
+      "intensity": "Moderate",
+      "duration": "25 mins",
+      "exercises": [
+        { "activity": "warm-up easy pedaling", "time": "05:00" },
+        { "activity": "steady pace cycling", "time": "15:00" },
+        { "activity": "cool down pedaling", "time": "05:00" }
+      ],
+      "rest": "01:00"
+    },
+    {
+      "id": 3,
+      "name": "swimming",
+      "label": "interval laps",
+      "intensity": "Moderate",
+      "duration": "25 mins",
+      "exercises": [
+        { "activity": "front crawl", "time": "05:00" },
+        { "activity": "rest", "time": "00:30" },
+        { "activity": "breaststroke", "time": "05:00" },
+        { "activity": "rest", "time": "00:30" },
+        { "activity": "backstroke", "time": "05:00" },
+        { "activity": "rest", "time": "00:30" },
+        { "activity": "freestyle laps", "time": "05:00" }
+      ],
+      "rest": "01:00"
+    },
+    {
+      "id": 4,
+      "name": "dancing / zumba / low-impact aerobics",
+      "label": "rhythm cardio",
+      "intensity": "Moderate",
+      "duration": "30 mins",
+      "exercises": [
+        { "activity": "warm-up side steps", "time": "03:00" },
+        { "activity": "front-back steps", "time": "05:00" },
+        { "activity": "hip twists", "time": "05:00" },
+        { "activity": "knee lifts with claps", "time": "05:00" },
+        { "activity": "freestyle dance", "time": "10:00" }
+      ],
+      "rest": "01:00"
+    },
+    {
+      "id": 5,
+      "name": "hiking or nature walking",
+      "label": "trail movement",
+      "intensity": "Moderate",
+      "duration": "40 mins",
+      "exercises": [
+        { "activity": "flat trail walk", "time": "15:00" },
+        { "activity": "uphill slow climb", "time": "10:00" },
+        { "activity": "mixed terrain walk", "time": "15:00" }
+      ],
+      "rest": "01:00"
+    },
+    {
+      "id": 6,
+      "name": "water aerobics",
+      "label": "aqua cardio",
+      "intensity": "Moderate",
+      "duration": "30 mins",
+      "exercises": [
+        { "activity": "water march", "time": "03:00" },
+        { "activity": "arm sweeps", "time": "03:00" },
+        { "activity": "leg lifts", "time": "03:00" },
+        { "activity": "side jumps", "time": "03:00" },
+        { "activity": "knee tucks", "time": "03:00" },
+        { "activity": "gentle floating stretch", "time": "05:00" }
+      ],
+      "rest": "01:00"
+    },
+    {
+      "id": 7,
+      "name": "fast-paced household chores",
+      "label": "daily activity boost",
+      "intensity": "Moderate",
+      "duration": "25 mins",
+      "exercises": [
+        { "activity": "vacuuming", "time": "05:00" },
+        { "activity": "scrubbing floors", "time": "05:00" },
+        { "activity": "mopping", "time": "05:00" },
+        { "activity": "lawn mowing", "time": "10:00" }
+      ],
+      "rest": "01:00"
+    },
+    {
+      "id": 8,
+      "name": "jog–walk intervals",
+      "label": "balanced cardio",
+      "intensity": "Moderate",
+      "duration": "25 mins",
+      "exercises": [
+        { "activity": "jog", "time": "02:00" },
+        { "activity": "walk", "time": "03:00" },
+        { "activity": "jog", "time": "02:00" },
+        { "activity": "walk", "time": "03:00" },
+        { "activity": "jog", "time": "02:00" },
+        { "activity": "walk", "time": "03:00" },
+        { "activity": "jog", "time": "02:00" },
+        { "activity": "walk", "time": "03:00" }
+      ],
+      "rest": "01:00"
+    },
+    {
+      "id": 9,
+      "name": "recreational sports",
+      "label": "fun cardio play",
+      "intensity": "Moderate",
+      "duration": "30 mins",
+      "exercises": [
+        { "activity": "warm-up rally", "time": "05:00" },
+        { "activity": "light match play", "time": "20:00" },
+        { "activity": "cool down stretching", "time": "05:00" }
+      ],
+      "rest": "01:00"
+    },
+    {
+      "id": 10,
+      "name": "climbing stairs",
+      "label": "step endurance",
+      "intensity": "Moderate",
+      "duration": "15 mins",
+      "exercises": [
+        { "activity": "steady climb", "time": "05:00" },
+        { "activity": "rest", "time": "00:30" },
+        { "activity": "climb again", "time": "05:00" },
+        { "activity": "rest", "time": "00:30" },
+        { "activity": "slow down steps", "time": "05:00" }
+      ],
+      "rest": "01:00"
+    }
+  ]
+}

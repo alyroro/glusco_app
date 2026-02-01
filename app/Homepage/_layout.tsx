@@ -1,153 +1,167 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { router, Slot, usePathname } from "expo-router"; // Use expo-router instead!
+import { router, Slot, usePathname } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { UserProvider } from "../context/UserContext";
 
+const ACTIVE_COLOR = "#0B1956";
+const INACTIVE_COLOR = "#9CA3AF";
+
 export default function MainLayout() {
-  const pathname = usePathname(); // Get current path
+  const pathname = usePathname();
+
+  // 1. Determine if we should HIDE the bottom nav
+  // We hide it if we are looking at a specific post (id) or creating a post
+  const isDetailScreen =
+    pathname.includes("/forum/") && pathname !== "/Homepage/forum";
+  const isSurveyScreen = pathname.includes("/SurveyForm");
+
+  const shouldHideNav = isDetailScreen || isSurveyScreen;
+
+  const isActive = (route: string) => {
+    if (route === "/Homepage/forum") {
+      return pathname.startsWith("/Homepage/forum");
+    }
+    return pathname === route;
+  };
+
+  const NavItem = ({ icon, label, route, iconActive }: any) => {
+    const active = isActive(route);
+    const color = active ? ACTIVE_COLOR : INACTIVE_COLOR;
+
+    return (
+      <TouchableOpacity
+        style={styles.navItem}
+        onPress={() => router.push(route)}
+        activeOpacity={0.7}
+      >
+        <MaterialCommunityIcons
+          name={active && iconActive ? iconActive : icon}
+          size={24}
+          color={color}
+        />
+        <Text
+          style={[styles.navLabel, { color }, active && styles.navLabelActive]}
+        >
+          {label}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <UserProvider>
       <View style={styles.container}>
+        <StatusBar style="dark" />
         <View style={styles.content}>
           <Slot />
         </View>
 
-        <View style={styles.bottomNav}>
-          {/* Dashboard/Home */}
-          <TouchableOpacity
-            style={styles.navItem}
-            onPress={() => router.push("/Homepage/Dashboard")} // Changed to expo-router
-          >
-            <MaterialCommunityIcons
-              name="home"
-              size={26}
-              color={pathname === "/Homepage/Dashboard" ? "#0B1956" : "#000"} // Check pathname
+        {/* 2. Only render navigation if we aren't on a detail screen */}
+        {!shouldHideNav && (
+          <View style={styles.bottomNav}>
+            <NavItem
+              icon="home-outline"
+              iconActive="home"
+              label="Home"
+              route="/Homepage/Dashboard"
             />
-            <Text
-              style={[
-                styles.navLabel,
-                pathname === "/Homepage/Dashboard" && styles.navLabelActive,
-              ]}
-            >
-              Home
-            </Text>
-          </TouchableOpacity>
-
-          {/* Insights */}
-          <TouchableOpacity
-            style={styles.navItem}
-            onPress={() => router.push("/Homepage/Insights")} // Check your actual file name
-          >
-            <MaterialCommunityIcons
-              name="lightbulb-outline"
-              size={26}
-              color={pathname === "/Homepage/Insights" ? "#0B1956" : "#4372b9"}
+            <NavItem
+              icon="lightbulb-outline"
+              iconActive="lightbulb"
+              label="Insights"
+              route="/Homepage/Insights"
             />
-            <Text
-              style={[
-                styles.navLabel,
-                pathname === "/Homepage/Insights" && styles.navLabelActive,
-              ]}
-            >
-              Insights
-            </Text>
-          </TouchableOpacity>
-
-          {/* Camera */}
-          <TouchableOpacity
-            style={styles.cameraButton}
-            onPress={() => router.push("/")}
-          >
-            <MaterialCommunityIcons name="camera" size={30} color="#fff" />
-          </TouchableOpacity>
-
-          {/* Forum */}
-          <TouchableOpacity
-            style={styles.navItem}
-            onPress={() => router.push("/Homepage/Forum")} // Check your actual file name
-          >
-            <MaterialCommunityIcons
-              name="forum-outline"
-              size={26}
-              color={pathname === "/Homepage/Forum" ? "#0B1956" : "#000"}
+            <View style={styles.actionButtonContainer}>
+              <TouchableOpacity
+                style={styles.cameraButton}
+                onPress={() => router.push("/RetakeSurveyForm/SurveyForm")}
+                activeOpacity={0.8}
+              >
+                <MaterialCommunityIcons name="plus" size={32} color="#fff" />
+              </TouchableOpacity>
+            </View>
+            <NavItem
+              icon="forum-outline"
+              iconActive="forum"
+              label="Forum"
+              route="/Homepage/forum"
             />
-            <Text
-              style={[
-                styles.navLabel,
-                pathname === "/Homepage/Forum" && styles.navLabelActive,
-              ]}
-            >
-              Forum
-            </Text>
-          </TouchableOpacity>
-
-          {/* Profile */}
-          <TouchableOpacity
-            style={styles.navItem}
-            onPress={() => router.push("/Homepage/Profile")} // Check your actual file name
-          >
-            <MaterialCommunityIcons
-              name="account-outline"
-              size={26}
-              color={pathname === "/Homepage/Profile" ? "#0B1956" : "#000"}
+            <NavItem
+              icon="account-outline"
+              iconActive="account"
+              label="Profile"
+              route="/Homepage/Profile"
             />
-            <Text
-              style={[
-                styles.navLabel,
-                pathname === "/Homepage/Profile" && styles.navLabelActive,
-              ]}
-            >
-              Profile
-            </Text>
-          </TouchableOpacity>
-        </View>
+          </View>
+        )}
       </View>
     </UserProvider>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  content: {
-    flex: 1,
-    paddingBottom: 100,
-  },
+  container: { flex: 1, backgroundColor: "#fff" },
+  content: { flex: 1 },
   bottomNav: {
     position: "absolute",
     left: 16,
     right: 16,
-    bottom: 16,
+    bottom: Platform.OS === "ios" ? 30 : 16,
     height: 70,
-    backgroundColor: "#F8F3ED",
-    borderRadius: 18,
-    borderTopWidth: 0,
-    borderColor: "transparent",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 24,
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
     alignItems: "center",
+    paddingHorizontal: 12,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.12,
-    shadowRadius: 10,
-    elevation: 8,
-    paddingHorizontal: 8,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 10,
+    borderWidth: 1,
+    borderColor: "rgba(0,0,0,0.05)",
   },
   navItem: {
     alignItems: "center",
     justifyContent: "center",
     flex: 1,
+    height: "100%",
   },
-  cameraButton: {
-    backgroundColor: "#0B1956",
+  actionButtonContainer: {
     width: 65,
-    height: 65,
-    borderRadius: 9999,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: -28,
   },
-  navLabel: { fontSize: 12, textAlign: "center", color: "#000", marginTop: 2 },
-  navLabelActive: { color: "#0B1956", fontWeight: "600" },
+  cameraButton: {
+    backgroundColor: ACTIVE_COLOR,
+    width: 58,
+    height: 58,
+    borderRadius: 29,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: -40,
+    borderWidth: 4,
+    borderColor: "#fff",
+    shadowColor: ACTIVE_COLOR,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 5,
+  },
+  navLabel: {
+    fontSize: 10,
+    textAlign: "center",
+    marginTop: 4,
+    fontWeight: "500",
+  },
+  navLabelActive: { fontWeight: "700" },
 });

@@ -1,3 +1,4 @@
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useEffect } from "react";
 import {
@@ -24,7 +25,6 @@ const RiskResult = ({
   const router = useRouter();
 
   useEffect(() => {
-    // Fetch prediction when component mounts
     updateUsername();
     fetchPred();
     insertFormData();
@@ -40,7 +40,7 @@ const RiskResult = ({
     return (
       <View style={[styles.container, styles.centerContent]}>
         <ActivityIndicator size="large" color="#ffffff" />
-        <Text style={[styles.subtitle, { marginTop: 20 }]}>
+        <Text style={[styles.subtitle, { marginTop: 20, color: "#fff" }]}>
           Analyzing your health data...
         </Text>
       </View>
@@ -48,55 +48,85 @@ const RiskResult = ({
   }
 
   const percent = Math.floor(predictionData.percent);
-  const color = () => {
-    if (percent < 20) return "#16A34A"; // Green
-    if (percent < 50) return "#EAB308";
-    return "#DC2626"; // Red
+
+  const getStatusColor = () => {
+    if (percent < 31) return "#10B981"; // Modern Green
+    if (percent < 61) return "#F59E0B"; // Modern Amber
+    return "#EF4444"; // Modern Red
   };
 
   const riskLevel = () => {
-    if (percent < 20) return "low";
-    if (percent < 50) return "moderate";
-    return "high";
+    if (percent < 31) return "Low";
+    if (percent < 61) return "Moderate";
+    return "High";
   };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Your Diabetes Risk Result</Text>
-      <Text style={styles.subtitle}>
-        Here’s what we found based on your data
-      </Text>
-
-      <View style={styles.card}>
-        {/* Circular Progress */}
-        <AnimatedCircularProgress
-          size={160}
-          width={10}
-          fill={percent}
-          tintColor={color()}
-          backgroundColor="#E5E7EB"
-          rotation={0}
-          lineCap="round"
-        >
-          {(fill: number) => (
-            <Text style={styles.percentText}>{`${Math.floor(fill)}%`}</Text>
-          )}
-        </AnimatedCircularProgress>
-
-        {/* Risk Level */}
-        <Text style={styles.levelText}>Risk Level: {riskLevel()}</Text>
-
-        {/* Description */}
-        <Text style={styles.description}>
-          Start tracking your daily habits to improve your diet, activity, and
-          sleep for better health.
+      {/* Title Section */}
+      <View style={styles.headerTextContainer}>
+        <Text style={styles.title}>Assessment Complete</Text>
+        <Text style={styles.subtitle}>
+          Here’s your personalized diabetes risk analysis
         </Text>
+      </View>
 
-        {/* Button */}
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => router.push("/Homepage/Dashboard")}
+      <View style={styles.mainCard}>
+        {/* Circular Progress Area */}
+        <View style={styles.chartContainer}>
+          <AnimatedCircularProgress
+            size={180}
+            width={14}
+            fill={percent}
+            tintColor={getStatusColor()}
+            backgroundColor="#F3F4F6"
+            rotation={0}
+            lineCap="round"
+          >
+            {(fill: number) => (
+              <View style={styles.innerCircle}>
+                <Text style={[styles.percentText, { color: getStatusColor() }]}>
+                  {`${Math.floor(fill)}%`}
+                </Text>
+                <Text style={styles.overallLabel}>OVERALL RISK</Text>
+              </View>
+            )}
+          </AnimatedCircularProgress>
+        </View>
+
+        {/* Risk Badge */}
+        <View
+          style={[styles.badge, { backgroundColor: getStatusColor() + "15" }]}
         >
-          <Text style={styles.buttonText}>Go to Dashboard</Text>
+          <Text style={[styles.badgeText, { color: getStatusColor() }]}>
+            {riskLevel()} Risk Level
+          </Text>
+        </View>
+
+        {/* Insight Description */}
+        <View style={styles.infoBox}>
+          <MaterialCommunityIcons
+            name="lightbulb-outline"
+            size={20}
+            color="#6B7280"
+          />
+          <Text style={styles.description}>
+            Based on your data, we recommend tracking your daily habits to
+            optimize your health outcomes.
+          </Text>
+        </View>
+
+        {/* Primary Action Button */}
+        <TouchableOpacity style={styles.primaryButton} onPress={onNext}>
+          <Text style={styles.buttonText}>View AI Explanation</Text>
+          <MaterialCommunityIcons name="chevron-right" size={20} color="#fff" />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.secondaryButton}
+          onPress={() => router.replace("/Homepage/Dashboard")}
+        >
+          <Text style={styles.secondaryButtonText}>Go to Dashboard</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -110,69 +140,111 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#0B1956",
     alignItems: "center",
-    paddingTop: 120,
+    paddingTop: 80,
   },
   centerContent: {
     justifyContent: "center",
-    paddingTop: 0, // Reset padding when centering spinner
+  },
+  headerTextContainer: {
+    marginBottom: 30,
+    alignItems: "center",
+    paddingHorizontal: 20,
   },
   title: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: "rgba(255,255,255,0.9)",
+    fontSize: 26,
+    fontWeight: "bold",
+    color: "#FFFFFF",
     textAlign: "center",
   },
   subtitle: {
     fontSize: 15,
-    color: "rgba(255,255,255,0.9)",
-    marginBottom: 20,
+    color: "rgba(255,255,255,0.7)",
     textAlign: "center",
+    marginTop: 8,
   },
-  card: {
-    width: 308,
-    backgroundColor: "#fff",
-    borderRadius: 15,
-    borderWidth: 2,
-    borderColor: "#E5E7EB",
-    paddingVertical: 30,
+  mainCard: {
+    width: "90%",
+    backgroundColor: "#F9FAFB",
+    borderRadius: 30,
+    padding: 25,
     alignItems: "center",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    elevation: 10,
   },
-  percentText: {
-    fontSize: 40,
-    color: "#121212",
-    fontWeight: "500",
+  chartContainer: {
+    marginVertical: 20,
   },
-  levelText: {
-    fontSize: 16,
-    color: "#000",
-    fontWeight: "500",
-    textTransform: "capitalize",
-    marginTop: 20,
-  },
-  description: {
-    width: 260,
-    fontSize: 14,
-    color: "#000",
-    textAlign: "justify",
-    marginTop: 10,
-  },
-  button: {
-    marginTop: 40,
-    width: 263,
-    height: 56,
-    borderRadius: 32,
-    borderWidth: 1,
-    borderColor: "#0B1956",
+  innerCircle: {
     alignItems: "center",
     justifyContent: "center",
   },
+  percentText: {
+    fontSize: 44,
+    fontWeight: "800",
+  },
+  overallLabel: {
+    fontSize: 11,
+    color: "#9CA3AF",
+    fontWeight: "700",
+    letterSpacing: 1,
+  },
+  badge: {
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 12,
+    marginBottom: 20,
+  },
+  badgeText: {
+    fontSize: 14,
+    fontWeight: "700",
+    textTransform: "uppercase",
+  },
+  infoBox: {
+    flexDirection: "row",
+    backgroundColor: "#FFFFFF",
+    padding: 15,
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    marginBottom: 30,
+    alignItems: "center",
+  },
+  description: {
+    flex: 1,
+    fontSize: 13,
+    color: "#4B5563",
+    marginLeft: 10,
+    lineHeight: 18,
+  },
+  primaryButton: {
+    backgroundColor: "#0B1956",
+    width: "100%",
+    height: 56,
+    borderRadius: 18,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#0B1956",
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
+  },
   buttonText: {
-    color: "#0B1956",
+    color: "#FFFFFF",
     fontSize: 16,
-    fontWeight: "500",
+    fontWeight: "bold",
+    marginRight: 8,
+  },
+  secondaryButton: {
+    marginTop: 15,
+    padding: 10,
+  },
+  secondaryButtonText: {
+    color: "#6B7280",
+    fontSize: 14,
+    fontWeight: "600",
   },
 });

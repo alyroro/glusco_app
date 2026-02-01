@@ -1,0 +1,41 @@
+const featureWeights = {
+  // --- Clinical Data Weights ---
+  HbA1c: 1.702094,
+  Gender: 0.453423,
+  Waist_cm: 0.052913,
+  Age: 0.035926,
+  FBS: 0.030236,
+  HDL: -0.019271,
+  Weight_kg: -0.019137,
+  Hip_cm: -0.012745,
+  Cholesterol_Total: -0.011429,
+  Systolic_BP: -0.004486,
+  Height_cm: -0.002561,
+  Diastolic_BP: -0.002131,
+
+  // --- Lifestyle Data Weights ---
+  exercise_duration_ord: 1.93676,
+  transpo_ord: 1.227402,
+  exercise_yes_ord: 0.697871,
+  fastfood_freq_ord: 0.602352,
+  mother_diab_ord: 0.498254,
+  processed_freq_ord: 0.438388,
+  lose_weight_ord: 0.436162,
+  exercise_freq_ord: 0.429371,
+  veg_freq_ord: 0.393954,
+  brother_diab_ord: 0.336777,
+  sleep_ord: 0.291942,
+  fried_food_freq_ord: 0.28765,
+  sweets_freq_ord: 0.258396,
+  extended_diab_ord: 0.223522,
+  activity_level_ord: 0.200632,
+  alcohol_ord: 0.173761,
+  sister_diab_ord: 0.173099,
+  sedentary_hours_ord: 0.126616,
+  smoking_ord: 0.10299,
+  father_diab_ord: 0.075879,
+  sweetdrink_freq_ord: 0.071802,
+  fruit_freq_ord: 0.001007,
+};
+
+export default featureWeights;
