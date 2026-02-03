@@ -12,7 +12,7 @@ import {
   View,
 } from "react-native";
 // Using MaterialIcons as a safer alternative for AI stars
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { GeminiResultRetake } from "../types/GeminiTypes";
 
 export default function AIExplanation({
@@ -54,17 +54,29 @@ export default function AIExplanation({
               <Text style={styles.logoAccent}>co</Text>
             </View>
 
-            {/* AI Title with THE Gemini Sparkle */}
+            {/* AI Title */}
             <View style={styles.titleWrapper}>
               <View style={styles.iconCircle}>
-                {/* auto-fix-high is the standard AI magic wand/sparkle star */}
-                <MaterialIcons
-                  name={"auto-fix-high" as any}
-                  size={24}
-                  color="#8EABFF"
-                />
+                <MaterialIcons name="auto-fix-high" size={24} color="#8EABFF" />
               </View>
               <Text style={styles.title}>AI Health Analysis</Text>
+            </View>
+
+            {/* NEW SECTION: Daily Tasks with Vertical Stack Design */}
+            <Text style={styles.overlaySectionTitle}>Daily Action Plan</Text>
+            <View style={styles.taskStack}>
+              {aiText.daily_tasks?.slice(0, 5).map((task, index) => (
+                <View key={index} style={styles.taskRowCard}>
+                  <View style={styles.taskIconCircleSmall}>
+                    <MaterialCommunityIcons
+                      name={(task.icon as any) || "lightning-bolt"}
+                      size={18}
+                      color="#0B1956"
+                    />
+                  </View>
+                  <Text style={styles.taskLabelRow}>{task.label}</Text>
+                </View>
+              ))}
             </View>
 
             {/* Summary Card */}
@@ -84,8 +96,9 @@ export default function AIExplanation({
               ))}
             </View>
 
+            {/* Specific Changes */}
             <View style={styles.card}>
-              <Text style={styles.sectionTitle}>Specficic Changes</Text>
+              <Text style={styles.sectionTitle}>Specific Changes</Text>
               {aiText.specific_changes.map((driver, index) => (
                 <View key={index} style={styles.listItem}>
                   <Text style={styles.boldText}>• {driver}</Text>
@@ -95,7 +108,7 @@ export default function AIExplanation({
 
             {/* Recommendations */}
             <View style={styles.card}>
-              <Text style={styles.sectionTitle}>Recommendations</Text>
+              <Text style={styles.sectionTitle}>Advice</Text>
               {aiText.advice.map((item, index) => (
                 <Text key={index} style={styles.text}>
                   ✔️ {item}
@@ -241,5 +254,75 @@ const styles = StyleSheet.create({
     color: "#0B1956",
     fontSize: 17,
     fontWeight: "700",
+  },
+
+  taskGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    marginBottom: 20,
+  },
+  taskCard: {
+    backgroundColor: "rgba(255, 255, 255, 0.15)", // Translucent to show background gradient
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.2)",
+    borderRadius: 20,
+    width: "48%",
+    padding: 16,
+    marginBottom: 12,
+    alignItems: "center",
+  },
+  taskIconCircle: {
+    backgroundColor: "#FFFFFF",
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  taskLabel: {
+    color: "#FFFFFF",
+    fontSize: 13,
+    fontWeight: "600",
+    textAlign: "center",
+  },
+  taskStack: {
+    flexDirection: "column",
+    gap: 10,
+    marginBottom: 24,
+  },
+  taskRowCard: {
+    flexDirection: "row", // Aligns icon and text in one line
+    alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.15)",
+    borderRadius: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+  },
+  taskIconCircleSmall: {
+    backgroundColor: "#FFFFFF",
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 15, // Gap between icon and text
+  },
+  taskLabelRow: {
+    color: "#FFFFFF",
+    fontSize: 15,
+    fontWeight: "600",
+    flex: 1, // Ensures text takes up remaining space
+  },
+  overlaySectionTitle: {
+    fontSize: 14,
+    fontWeight: "800",
+    color: "#8EABFF",
+    marginBottom: 12,
+    textTransform: "uppercase",
+    letterSpacing: 1.2,
   },
 });

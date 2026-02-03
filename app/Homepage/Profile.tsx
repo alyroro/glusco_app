@@ -1,8 +1,11 @@
 import supabase from "@/app/api/client";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { decode } from "base64-arraybuffer";
+import * as FileSystem from "expo-file-system/legacy";
+import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -21,23 +24,104 @@ const ACCENT_BG = "#F8F3ED";
 
 export default function ProfileScreen() {
   const router = useRouter();
-  const { profile, loading } = useUser();
+  const { profile, loading, updateProfile } = useUser();
 
+  // Local state to handle the profile picture update immediately
+  const [profilePic, setProfilePic] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+
+  // Sync local state with context when profile loads
+  useEffect(() => {
+    if (profile?.profile_picture) {
+      setProfilePic(profile.profile_picture);
+    }
+  }, [profile]);
+
+  const handleEditPhoto = async () => {
+    try {
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert(
+          "Permission Denied",
+          "Gallery access is required to change your photo.",
+        );
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.5,
+      });
+
+      if (!result.canceled) {
+        uploadImage(result.assets[0].uri);
+      }
+    } catch (error) {
+      console.error("Pick error:", error);
+    }
+  };
+
+  const uploadImage = async (uri: string) => {
+    try {
+      setUploading(true);
+
+      const fileExt = uri.split(".").pop()?.toLowerCase() || "jpg";
+      const fileName = `${profile?.id}-${Date.now()}.${fileExt}`;
+      const filePath = `avatars/${fileName}`;
+
+      // This method now works because it's coming from 'expo-file-system/legacy'
+      const base64 = await FileSystem.readAsStringAsync(uri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+
+      const arrayBuffer = decode(base64);
+
+      const { error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(filePath, arrayBuffer, {
+          contentType: `image/${fileExt === "png" ? "png" : "jpeg"}`,
+          upsert: true,
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { data: urlData } = supabase.storage
+        .from("avatars")
+        .getPublicUrl(filePath);
+
+      const publicUrl = urlData.publicUrl;
+
+      const { error: updateError } = await supabase
+        .from("users")
+        .update({ profile_picture: publicUrl })
+        .eq("id", profile?.id);
+
+      if (!updateError) {
+        // THIS IS THE KEY: This triggers a re-render on every page
+        // that uses 'profile' from useUser()
+        updateProfile({ profile_picture: publicUrl });
+
+        Alert.alert("Success", "Profile picture updated!");
+      }
+    } catch (error: any) {
+      console.error("Upload Error:", error);
+      Alert.alert("Upload Failed", error.message);
+    } finally {
+      setUploading(false);
+    }
+  };
   const handleLogout = async () => {
-    Alert.alert("Logout", "Are you sure you want to log out?", [
+    Alert.alert("Logout", "Are you sure?", [
       { text: "Cancel", style: "cancel" },
       {
         text: "Log Out",
         style: "destructive",
         onPress: async () => {
-          try {
-            const { error } = await supabase.auth.signOut();
-            if (error) throw error;
-            router.replace("/get-started");
-          } catch (err) {
-            console.error("Logout error:", err);
-            Alert.alert("Error", "Could not log out correctly.");
-          }
+          await supabase.auth.signOut();
+          router.replace("/get-started");
         },
       },
     ]);
@@ -47,7 +131,6 @@ export default function ProfileScreen() {
     return (
       <View style={[styles.container, styles.centerContent]}>
         <ActivityIndicator size="large" color="#fff" />
-        <Text style={styles.loadingText}>Syncing profile...</Text>
       </View>
     );
   }
@@ -56,16 +139,27 @@ export default function ProfileScreen() {
     <View style={styles.container}>
       <StatusBar style="light" />
 
-      {/* Blue Header Section */}
       <View style={styles.headerBackground}>
         <SafeAreaView>
           <View style={styles.profileHeader}>
             <View style={styles.imageWrapper}>
-              <Image
-                source={{ uri: profile?.profile_picture }}
-                style={styles.profilePic}
-              />
-              <TouchableOpacity style={styles.editBadge}>
+              {uploading ? (
+                <View style={[styles.profilePic, styles.centerContent]}>
+                  <ActivityIndicator color={PRIMARY_COLOR} />
+                </View>
+              ) : (
+                <Image
+                  source={{
+                    uri: profilePic || "https://via.placeholder.com/150",
+                  }}
+                  style={styles.profilePic}
+                />
+              )}
+              <TouchableOpacity
+                style={styles.editBadge}
+                onPress={handleEditPhoto}
+                disabled={uploading}
+              >
                 <MaterialCommunityIcons
                   name="camera"
                   size={18}
@@ -74,7 +168,7 @@ export default function ProfileScreen() {
               </TouchableOpacity>
             </View>
 
-            <Text style={styles.nameText}>{profile?.name || "User Name"}</Text>
+            <Text style={styles.nameText}>{profile?.name || "User"}</Text>
             <Text style={styles.handleText}>
               @{profile?.username || "username"}
             </Text>
@@ -82,43 +176,13 @@ export default function ProfileScreen() {
         </SafeAreaView>
       </View>
 
-      {/* Settings Section */}
       <View style={styles.contentCard}>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollInside}
-        >
+        <ScrollView contentContainerStyle={styles.scrollInside}>
           <Text style={styles.menuLabel}>Account Settings</Text>
-
           <MenuOption
             icon="account-cog-outline"
             label="Personal Information"
-            onPress={() => {}}
-          />
-          <MenuOption
-            icon="chart-timeline-variant"
-            label="Progress Overview"
-            onPress={() => router.push("/Homepage/Insights")}
-          />
-          <MenuOption
-            icon="bell-outline"
-            label="Notifications"
-            onPress={() => {}}
-          />
-
-          <Text style={[styles.menuLabel, { marginTop: 20 }]}>
-            Support & Legal
-          </Text>
-
-          <MenuOption
-            icon="shield-check-outline"
-            label="Privacy Policy"
-            onPress={() => {}}
-          />
-          <MenuOption
-            icon="help-circle-outline"
-            label="Help Center"
-            onPress={() => {}}
+            onPress={() => router.push("/Homepage/UpdateProfile")}
           />
 
           <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
@@ -131,7 +195,7 @@ export default function ProfileScreen() {
   );
 }
 
-// Helper Component for Menu Items
+// MenuOption remains the same as your previous code...
 function MenuOption({ icon, label, onPress }: any) {
   return (
     <TouchableOpacity
@@ -151,21 +215,8 @@ function MenuOption({ icon, label, onPress }: any) {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: PRIMARY_COLOR },
   centerContent: { justifyContent: "center", alignItems: "center" },
-  loadingText: {
-    color: "#fff",
-    marginTop: 15,
-    fontSize: 16,
-    fontWeight: "500",
-  },
-
-  headerBackground: {
-    paddingBottom: 40,
-    backgroundColor: PRIMARY_COLOR,
-  },
-  profileHeader: {
-    alignItems: "center",
-    marginTop: 20,
-  },
+  headerBackground: { paddingBottom: 40, backgroundColor: PRIMARY_COLOR },
+  profileHeader: { alignItems: "center", marginTop: 20 },
   imageWrapper: {
     width: 120,
     height: 120,
@@ -192,22 +243,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     elevation: 4,
-    shadowColor: "#000",
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
   },
-  nameText: {
-    color: "#fff",
-    fontSize: 22,
-    fontWeight: "bold",
-    marginTop: 15,
-  },
-  handleText: {
-    color: "rgba(255,255,255,0.7)",
-    fontSize: 16,
-    marginTop: 4,
-  },
-
+  nameText: { color: "#fff", fontSize: 22, fontWeight: "bold", marginTop: 15 },
+  handleText: { color: "rgba(255,255,255,0.7)", fontSize: 16, marginTop: 4 },
   contentCard: {
     flex: 1,
     backgroundColor: ACCENT_BG,
@@ -215,18 +253,13 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 35,
     paddingHorizontal: 25,
   },
-  scrollInside: {
-    paddingTop: 30,
-    paddingBottom: 120, // Space for Bottom Nav
-  },
+  scrollInside: { paddingTop: 30, paddingBottom: 120 },
   menuLabel: {
     fontSize: 14,
     fontWeight: "700",
     color: "#9CA3AF",
     textTransform: "uppercase",
-    letterSpacing: 1,
     marginBottom: 10,
-    marginLeft: 5,
   },
   optionRow: {
     flexDirection: "row",
@@ -235,9 +268,6 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 16,
     marginBottom: 12,
-    shadowColor: "#000",
-    shadowOpacity: 0.03,
-    shadowRadius: 5,
     elevation: 2,
   },
   iconBox: {
@@ -249,12 +279,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginRight: 15,
   },
-  optionLabel: {
-    flex: 1,
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#1F2937",
-  },
+  optionLabel: { flex: 1, fontSize: 16, fontWeight: "600", color: "#1F2937" },
   logoutButton: {
     flexDirection: "row",
     alignItems: "center",

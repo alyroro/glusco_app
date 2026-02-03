@@ -142,12 +142,6 @@ export default function SurveyForm() {
     // Numbers: Allows only digits and a single decimal point
     const numericRegex = /^\d*\.?\d+$/;
 
-    // --- 3. Validate Username ---
-    if (!usernameRegex.test(info.username)) {
-      alert("Username can only contain letters, numbers, and underscores.");
-      return false;
-    }
-
     const numericFields = [
       { label: "Age", value: info.age },
       { label: "Height", value: info.height },
@@ -173,7 +167,6 @@ export default function SurveyForm() {
 
     // 1. Check if fields are empty FIRST (Local check is faster)
     const allFieldsFilled =
-      String(info.username).trim() !== "" &&
       String(info.age).trim() !== "" && // Fixes the error
       info.gender !== 0 &&
       String(info.height).trim() !== "" &&

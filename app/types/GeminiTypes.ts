@@ -3,8 +3,17 @@ interface Driver {
   impact: string;
 }
 
+export interface DailyTask {
+  id: string;
+  label: string;
+  icon: string;
+  reasoning: string;
+}
+
 interface GeminiResult {
   summary: string;
+  risk_delta?: number;
+  daily_tasks?: DailyTask[];
   top_drivers: Driver[];
   specific_changes: string[];
   advice: string[];
@@ -13,6 +22,8 @@ interface GeminiResult {
 
 export interface AIReport {
   summary: string;
+  risk_delta?: number;
+  daily_tasks?: DailyTask[];
   top_drivers: Driver[];
   specific_changes: string[];
   advice: string[];
@@ -21,6 +32,8 @@ export interface AIReport {
 
 export interface GeminiResultRetake {
   summary: string;
+  risk_delta?: number;
+  daily_tasks?: DailyTask[];
   top_drivers: Driver[];
   specific_changes: string[];
   advice: string[];

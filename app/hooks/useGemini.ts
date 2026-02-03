@@ -1,6 +1,11 @@
 // hooks/useGemini.ts
 import { useEffect, useState } from "react";
-import { getUserGemini, getUserGeminiRetake } from "../api/userGemini";
+import {
+  getCurrentUserAIReport,
+  getUserGemini,
+  getUserGeminiRetake,
+} from "../api/userGemini";
+import { AIReport } from "../types/GeminiTypes";
 
 export function useGemini(modelPrediction: object | null) {
   const [resultText, setResultText] = useState<any | null>(null);
@@ -63,4 +68,20 @@ export function useGeminiRetake({
   }, [modelPredictionLastWeek, modelPredictionThisWeek]); // Re-run whenever predictionData changes
 
   return { resultText, aiLoading: loading };
+}
+
+export function useUserAnalysis() {
+  const [analysis, setAnalysis] = useState<AIReport | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchAnalysis() {
+      const data = await getCurrentUserAIReport();
+      setAnalysis(data);
+      setLoading(false);
+    }
+    fetchAnalysis();
+  }, []);
+
+  return { analysis, analysisLoading: loading };
 }

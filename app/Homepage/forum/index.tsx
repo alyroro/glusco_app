@@ -16,11 +16,23 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+// Define your categories here
+const CATEGORIES = [
+  "All",
+  "General",
+  "Health",
+  "Advice",
+  "Question",
+  "Discussion",
+  "News",
+];
+
 export default function ForumScreen() {
   const [activeTab, setActiveTab] = useState("Popular");
+  const [selectedCategory, setSelectedCategory] = useState("All"); // Category State
   const { forumData, loading, refreshForumData, profile } = useUser();
   const [refreshing, setRefreshing] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(""); // State for search
+  const [searchQuery, setSearchQuery] = useState("");
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -28,7 +40,7 @@ export default function ForumScreen() {
     setRefreshing(false);
   };
 
-  // --- COMBINED FILTERING LOGIC ---
+  // --- UPDATED FILTERING LOGIC ---
   const filteredPosts = useMemo(() => {
     let posts = Array.isArray(forumData)
       ? forumData
@@ -36,12 +48,17 @@ export default function ForumScreen() {
         ? [forumData]
         : [];
 
-    // 1. Tab Filtering
+    // 1. Primary Tab Filtering
     if (activeTab === "My Posts") {
       posts = posts.filter((post) => post.user === profile?.id);
     }
 
-    // 2. Search Filtering (Case Insensitive)
+    // 2. Category Filtering
+    if (selectedCategory !== "All") {
+      posts = posts.filter((post) => post.category === selectedCategory);
+    }
+
+    // 3. Search Filtering
     if (searchQuery.trim().length > 0) {
       const query = searchQuery.toLowerCase();
       posts = posts.filter(
@@ -53,7 +70,7 @@ export default function ForumScreen() {
     }
 
     return posts;
-  }, [forumData, activeTab, profile, searchQuery]);
+  }, [forumData, activeTab, selectedCategory, profile, searchQuery]);
 
   if (loading && !forumData) {
     return (
@@ -68,12 +85,12 @@ export default function ForumScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Search Bar with Clear Button */}
+      {/* Search Bar */}
       <View style={styles.searchBar}>
         <MaterialCommunityIcons name="magnify" size={20} color="#A1A8B0" />
         <TextInput
           style={styles.searchInput}
-          placeholder="Search topics, titles, or categories..."
+          placeholder="Search topics..."
           placeholderTextColor="#A1A8B0"
           value={searchQuery}
           onChangeText={setSearchQuery}
@@ -89,7 +106,7 @@ export default function ForumScreen() {
         )}
       </View>
 
-      {/* Tabs */}
+      {/* Primary Tabs (Popular / My Posts) */}
       <View style={styles.tabs}>
         {["Popular", "My Posts"].map((tab) => (
           <TouchableOpacity
@@ -107,6 +124,35 @@ export default function ForumScreen() {
             </Text>
           </TouchableOpacity>
         ))}
+      </View>
+
+      {/* NEW: Horizontal Category Filter */}
+      <View style={styles.categoryContainer}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.categoryScroll}
+        >
+          {CATEGORIES.map((cat) => (
+            <TouchableOpacity
+              key={cat}
+              onPress={() => setSelectedCategory(cat)}
+              style={[
+                styles.categoryChip,
+                selectedCategory === cat && styles.activeCategoryChip,
+              ]}
+            >
+              <Text
+                style={[
+                  styles.categoryChipText,
+                  selectedCategory === cat && styles.activeCategoryChipText,
+                ]}
+              >
+                {cat}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
       </View>
 
       <ScrollView
@@ -179,7 +225,7 @@ export default function ForumScreen() {
               color="#E5E7EB"
             />
             <Text style={styles.emptyText}>
-              `No posts found matching {searchQuery}`
+              No posts found matching filters
             </Text>
           </View>
         )}
@@ -210,7 +256,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   searchInput: { marginLeft: 8, fontSize: 15, color: "#000", flex: 1 },
-  tabs: { flexDirection: "row", marginBottom: 15, marginHorizontal: 20 },
+  tabs: { flexDirection: "row", marginBottom: 10, marginHorizontal: 20 },
   tab: {
     paddingVertical: 8,
     paddingHorizontal: 20,
@@ -221,6 +267,23 @@ const styles = StyleSheet.create({
   activeTab: { backgroundColor: "#0B1956" },
   tabText: { color: "#666", fontWeight: "600" },
   activeTabText: { color: "#fff" },
+
+  // Category Styles
+  categoryContainer: { marginBottom: 15 },
+  categoryScroll: { paddingHorizontal: 20 },
+  categoryChip: {
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 8,
+    backgroundColor: "#fff",
+    marginRight: 8,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+  },
+  activeCategoryChip: { backgroundColor: "#EEF2FF", borderColor: "#4338CA" },
+  categoryChipText: { fontSize: 12, color: "#6B7280", fontWeight: "500" },
+  activeCategoryChipText: { color: "#4338CA", fontWeight: "700" },
+
   card: {
     backgroundColor: "#fff",
     borderRadius: 16,
@@ -229,10 +292,6 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     borderWidth: 1,
     borderColor: "#F3F4F6",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
     elevation: 3,
   },
   cardHeader: { flexDirection: "row", alignItems: "center", marginBottom: 10 },
@@ -279,7 +338,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 30,
     alignItems: "center",
-
     zIndex: 999,
     elevation: 10,
   },

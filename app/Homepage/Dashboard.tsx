@@ -19,11 +19,52 @@ export default function DashboardScreen() {
     useUser();
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
 
+  // --- 1. HEALTH COLOR LOGIC ---
+  const getRiskColor = (pct: number) => {
+    if (pct < 31) return "#10B981"; // Green
+    if (pct < 61) return "#F59E0B"; // Amber
+    return "#EF4444"; // Red
+  };
+
+  // --- 2. CALENDAR MARKING LOGIC ---
+  const markedDates: any = {};
+
+  if (Array.isArray(predData)) {
+    predData.forEach((item: any) => {
+      // Formats the timestamp to YYYY-MM-DD
+      const dateKey = item.created_at.split("T")[0];
+      const riskPct = Math.floor(item.percent);
+
+      markedDates[dateKey] = {
+        customStyles: {
+          container: {
+            backgroundColor: getRiskColor(riskPct),
+            elevation: 2,
+            borderRadius: 20,
+          },
+          text: {
+            color: "white",
+            fontWeight: "bold",
+          },
+        },
+      };
+    });
+  }
+
+  // Highlight the selected day with a border if it's already marked, or a navy circle if not
+  if (selectedDay) {
+    markedDates[selectedDay] = {
+      ...markedDates[selectedDay],
+      selected: true,
+      selectedColor: "#0B1956",
+    };
+  }
+
   const handleDayPress = (day: any) => {
     setSelectedDay(day.dateString);
   };
 
-  if (loading && predLoading && formLoading) {
+  if (loading || predLoading || formLoading) {
     return (
       <View
         style={[
@@ -43,7 +84,7 @@ export default function DashboardScreen() {
   if (!profile || !predData || !formData) {
     return (
       <View style={[styles.container, styles.centerContent]}>
-        <Text>Please log in to view your dashboard and prediction.</Text>
+        <Text>Please log in to view your dashboard.</Text>
       </View>
     );
   }
@@ -51,15 +92,8 @@ export default function DashboardScreen() {
   const latestPred = Array.isArray(predData)
     ? predData[predData.length - 1].percent
     : predData.percent;
-
   const latestForm = Array.isArray(formData) ? formData[0] : formData;
   const percent = Math.floor(latestPred);
-
-  const color = () => {
-    if (percent < 31) return "#10B981"; // Modern Green
-    if (percent < 61) return "#F59E0B"; // Modern Amber
-    return "#EF4444"; // Modern Red
-  };
 
   const riskLevel = () => {
     if (percent < 31) return "Low";
@@ -98,7 +132,7 @@ export default function DashboardScreen() {
             size={160}
             width={12}
             fill={percent}
-            tintColor={color()}
+            tintColor={getRiskColor(percent)}
             backgroundColor="#F3F4F6"
             rotation={0}
             lineCap="round"
@@ -106,7 +140,7 @@ export default function DashboardScreen() {
             {(fill: number) => (
               <View style={styles.innerCircleContent}>
                 <Text
-                  style={[styles.riskPercent, { color: color() }]}
+                  style={[styles.riskPercent, { color: getRiskColor(percent) }]}
                 >{`${Math.round(fill)}%`}</Text>
                 <Text style={styles.riskLevelText}>{riskLevel()} Risk</Text>
               </View>
@@ -122,8 +156,8 @@ export default function DashboardScreen() {
           <TouchableOpacity
             onPress={() =>
               router.push({
-                pathname: "/Homepage/ai-explanation",
-                params: { user: profile.id }, // Pass your number here
+                pathname: "/Homepage/ai-explanation" as any,
+                params: { user: profile.id },
               })
             }
             style={styles.summaryBtn}
@@ -141,7 +175,6 @@ export default function DashboardScreen() {
       {/* Metrics Section */}
       <Text style={styles.sectionTitle}>Key Vitals</Text>
       <View style={styles.cardsContainer}>
-        {/* Blood Pressure */}
         <View style={styles.card}>
           <View style={[styles.iconBox, { backgroundColor: "#FEF2F2" }]}>
             <MaterialCommunityIcons
@@ -157,7 +190,6 @@ export default function DashboardScreen() {
           <Text style={styles.cardUnit}>mmHg</Text>
         </View>
 
-        {/* HbA1c */}
         <View style={styles.card}>
           <View style={[styles.iconBox, { backgroundColor: "#EFF6FF" }]}>
             <MaterialCommunityIcons name="water" size={22} color="#3B82F6" />
@@ -166,30 +198,6 @@ export default function DashboardScreen() {
           <Text style={styles.cardValue}>{latestForm.hba1c}</Text>
           <Text style={styles.cardUnit}>mg/dL</Text>
         </View>
-
-        {/* Diet */}
-        <View style={styles.card}>
-          <View style={[styles.iconBox, { backgroundColor: "#F0FDF4" }]}>
-            <MaterialCommunityIcons
-              name="food-apple"
-              size={22}
-              color="#22C55E"
-            />
-          </View>
-          <Text style={styles.cardLabel}>Diet</Text>
-          <Text style={styles.cardValue}>Balanced</Text>
-          <Text style={styles.cardUnit}>Weekly Avg</Text>
-        </View>
-
-        {/* Exercise */}
-        <View style={styles.card}>
-          <View style={[styles.iconBox, { backgroundColor: "#FAF5FF" }]}>
-            <MaterialCommunityIcons name="run" size={22} color="#A855F7" />
-          </View>
-          <Text style={styles.cardLabel}>Exercise</Text>
-          <Text style={styles.cardValue}>4x / Week</Text>
-          <Text style={styles.cardUnit}>30 mins avg</Text>
-        </View>
       </View>
 
       {/* Tracker Section */}
@@ -197,15 +205,10 @@ export default function DashboardScreen() {
       <View style={styles.calendarContainer}>
         <Calendar
           onDayPress={handleDayPress}
-          markedDates={
-            selectedDay
-              ? { [selectedDay]: { selected: true, selectedColor: "#0B1956" } }
-              : {}
-          }
+          markingType={"custom"} // Allows the circular background colors
+          markedDates={markedDates}
           theme={{
             calendarBackground: "#ffffff",
-            selectedDayBackgroundColor: "#0B1956",
-            selectedDayTextColor: "#ffffff",
             todayTextColor: "#0B1956",
             arrowColor: "#0B1956",
             monthTextColor: "#0B1956",
@@ -223,7 +226,6 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   centerContent: { justifyContent: "center", alignItems: "center" },
   subtitle: { fontSize: 15, color: "#fff", textAlign: "center" },
-
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -243,15 +245,11 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   profilePic: { width: "100%", height: "100%", borderRadius: 24 },
-
   mainRiskCard: {
     backgroundColor: "#fff",
     marginHorizontal: 25,
     borderRadius: 24,
     padding: 20,
-    shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
     elevation: 4,
   },
   riskCardTitle: {
@@ -269,7 +267,6 @@ const styles = StyleSheet.create({
     color: "#6B7280",
     marginTop: -5,
   },
-
   riskLevelContainer: { alignItems: "center", marginTop: 20 },
   riskMessage: {
     fontSize: 13,
@@ -294,7 +291,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginRight: 5,
   },
-
   sectionTitle: {
     fontSize: 18,
     fontWeight: "700",
@@ -303,7 +299,6 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginBottom: 15,
   },
-
   cardsContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -316,9 +311,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 16,
     marginBottom: 15,
-    shadowColor: "#000",
-    shadowOpacity: 0.03,
-    shadowRadius: 10,
     elevation: 2,
   },
   iconBox: {
@@ -337,14 +329,11 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   cardUnit: { fontSize: 11, color: "#9CA3AF", marginTop: 2 },
-
   calendarContainer: {
     marginHorizontal: 25,
     backgroundColor: "#fff",
     borderRadius: 20,
     padding: 10,
-    shadowColor: "#000",
-    shadowOpacity: 0.03,
     elevation: 2,
   },
   calendar: { borderRadius: 20 },

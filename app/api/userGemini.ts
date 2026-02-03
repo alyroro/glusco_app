@@ -1,4 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import lightExercises from "../../assets/exercises/light_exercises.json";
+import moderateExercises from "../../assets/exercises/moderate_exercises.json";
+import vigorousExercises from "../../assets/exercises/vigorous_exercises.json";
 import featureWeights from "../context/FeatureWeighs";
 import { AIReport } from "../types/GeminiTypes";
 import { supabase } from "./client";
@@ -135,16 +138,23 @@ export const getUserGemini = async (modelPrediction: object) => {
       CONTEXT:
       - Model Weights: ${JSON.stringify(featureWeights)}
       - Clinical Thresholds: HbA1c (Normal <5.7, Diabetes >=6.5), FBS (Normal <100, Diabetes >=126)
-      
+      - If percent is < 31, return "low"; if percent is < 61, return "moderate"; else return "vigorous".
+
       PATIENT DATA:
       ${JSON.stringify(modelPrediction)}
 
       SURVEY SCHEMA:
       ${JSON.stringify(surveySchema)}
 
+      EXERCISES:
+      - ${JSON.stringify(lightExercises)}
+      - ${JSON.stringify(moderateExercises)}
+      - ${JSON.stringify(vigorousExercises)}
+
       INSTRUCTION:
-      Identify the top 2 factors driving the current risk score. Explain them using the thresholds. 
-      Provide a clear 'Next Step'. Also explain what specific changes can be made to reduce the risk. Make it clear, concise and short. Use simple language and talk to the patient directly.
+      Identify the top 2 factors driving the current risk score.
+      Provide a clear 'Next Step'. Identify which lifestyle factors (from the weights/schema) contributed most to the risk change. 
+      Generate 5 highly specific, actionable "Daily Tasks" for the user to help reduce their risk next week. Make it clear, concise and short. Use simple language and talk to the patient directly.
 
       OUTPUT FORMAT:
       Return response ONLY as JSON: 
@@ -153,6 +163,20 @@ export const getUserGemini = async (modelPrediction: object) => {
         "top_drivers": [{"feature": "name", "impact": "description"}],
         "specific_changes": ["change 1", "change 2"],
         "advice": ["bullet point 1", "bullet point 2"],
+        "daily_tasks": [
+      {
+        "id": "unique_string",
+        "label": "Drink 8 glasses of water",
+        "icon": "water",
+        "reasoning": "Because user reported low hydration while HbA1c is high."
+      },
+      {
+        "id": "unique_string",
+        "label": "30 min brisk walk",
+        "icon": "walk",
+        "reasoning": "To counteract the rise in FBS levels."
+      }
+    ],
         "disclaimer": "legal text"
       }
     `;
@@ -219,18 +243,40 @@ export const getUserGeminiRetake = async ({
       SURVEY SCHEMA:
       ${JSON.stringify(surveySchema)}
 
+      EXERCISES:
+      - ${JSON.stringify(lightExercises)}
+      - ${JSON.stringify(moderateExercises)}
+      - ${JSON.stringify(vigorousExercises)}
+
       Explain to the user:
       1. Did they have a 'Good' or 'Bad' week?
       2. What specific change (e.g. exercise) caused the drop or rise in risk?
       3. What should they focus on next week (e.g. reducing fried food)?
+      4. Identify which lifestyle factors (from the weights/schema) contributed most to the risk change. 
+      5. Generate 5 highly specific, actionable "Daily Tasks" for the user to help reduce their risk next week.
 
       OUTPUT FORMAT:
       Return response ONLY as JSON: 
       {
         "summary": "overall text",
+        "risk_delta": "Value of increase/decrease"
         "top_drivers": [{"feature": "name", "impact": "description"}],
         "specific_changes": ["change 1", "change 2"],
         "advice": ["bullet point 1", "bullet point 2"],
+        "daily_tasks": [
+      {
+        "id": "unique_string",
+        "label": "Drink 8 glasses of water",
+        "icon": "water",
+        "reasoning": "Because user reported low hydration while HbA1c is high."
+      },
+      {
+        "id": "unique_string",
+        "label": "30 min brisk walk",
+        "icon": "walk",
+        "reasoning": "To counteract the rise in FBS levels."
+      }
+    ],
         "disclaimer": "legal text"
       }
     `;
@@ -279,6 +325,8 @@ export const insertAnalysisToDB = async (
         summary: ai_analysis.summary,
         top_drivers: ai_analysis.top_drivers,
         specific_changes: ai_analysis.specific_changes,
+        daily_tasks: ai_analysis.daily_tasks,
+        risk_delta: ai_analysis.risk_delta,
         advice: ai_analysis.advice,
         disclaimer: ai_analysis.disclaimer,
       })
@@ -294,4 +342,30 @@ export const insertAnalysisToDB = async (
     console.error("Error inserting AI analysis:", error);
     return null;
   }
+};
+
+export const getCurrentUserAIReport = async () => {
+  // 1. Get the ID of the authenticated user from the session
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) return null;
+
+  // 2. Fetch only the LATEST row for this user
+  const { data, error } = await supabase
+    .from("ai_analysis")
+    .select("*")
+    .eq("uuid", user.id)
+    .order("created_at", { ascending: false }) // Newest first
+    .limit(1) // Get only one record
+    .maybeSingle(); // Returns the object directly, or null if nothing found
+
+  if (error) {
+    console.error("Error fetching latest AI report:", error);
+    return null;
+  }
+
+  return data; // This will now be a single object, not an array
 };

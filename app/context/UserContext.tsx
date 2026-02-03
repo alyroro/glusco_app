@@ -1,11 +1,13 @@
 // context/UserContext.tsx
-import React, { createContext, useContext } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { useFormData } from "../hooks/useFormData";
 import { useGetAllForms } from "../hooks/useForum";
+import { useUserAnalysis } from "../hooks/useGemini";
 import { usePredData, UserPredData } from "../hooks/usePredData";
 import { useProfile } from "../hooks/useProfile";
 import Forum from "../types/ForumDB";
-import { FormData, UserDB } from "../types/UserDB"; // Adjust import based on your types
+import { AIReport } from "../types/GeminiTypes";
+import { FormData, UserDB } from "../types/UserDB";
 
 interface UserContextType {
   profile: UserDB | null;
@@ -16,22 +18,40 @@ interface UserContextType {
   formLoading: boolean;
   forumData: Forum | Forum[] | null;
   forumLoading: boolean;
+  analysis: AIReport | null;
+  analysisLoading: boolean;
   refreshForumData: () => void;
-  // You can add a refresh function here if your useProfile hook supports it
+  // ADD THIS: Function to manually update the profile state
+  updateProfile: (updates: Partial<UserDB>) => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
-  // Use your existing hook here
-  const { profile, loading } = useProfile();
+  const { profile: initialProfile, loading } = useProfile();
   const { predData, loading: predLoading } = usePredData();
   const { formData, loading: formLoading } = useFormData();
   const { forumData, forumLoading, refreshForumData } = useGetAllForms();
+  const { analysis, analysisLoading } = useUserAnalysis();
+  // 1. Create a local state that we can manipulate
+  const [profile, setLocalProfile] = useState<UserDB | null>(null);
+
+  // 2. Sync local state whenever the hook finishes loading the initial data
+  useEffect(() => {
+    if (initialProfile) {
+      setLocalProfile(initialProfile);
+    }
+  }, [initialProfile]);
+
+  // 3. Function to update state across all pages
+  const updateProfile = (updates: Partial<UserDB>) => {
+    setLocalProfile((prev) => (prev ? { ...prev, ...updates } : null));
+  };
+
   return (
     <UserContext.Provider
       value={{
-        profile,
+        profile, // We pass the state, not the hook result
         loading,
         predData,
         predLoading,
@@ -39,7 +59,10 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         formLoading,
         forumData,
         forumLoading,
+        analysis,
+        analysisLoading,
         refreshForumData,
+        updateProfile, // Now other screens can call this
       }}
     >
       {children}
@@ -47,7 +70,6 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-// Custom hook to consume the context
 export const useUser = () => {
   const context = useContext(UserContext);
   if (context === undefined) {

@@ -49,14 +49,14 @@ const RiskResult = ({
 
   const percent = Math.floor(predictionData.percent);
   const color = () => {
-    if (percent < 20) return "#16A34A"; // Green
-    if (percent < 50) return "#EAB308";
+    if (percent < 31) return "#16A34A"; // Green
+    if (percent < 61) return "#EAB308";
     return "#DC2626"; // Red
   };
 
   const riskLevel = () => {
-    if (percent < 20) return "low";
-    if (percent < 50) return "moderate";
+    if (percent < 31) return "low";
+    if (percent < 61) return "moderate";
     return "high";
   };
   return (
