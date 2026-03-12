@@ -41,12 +41,7 @@ export default function GetStartedScreen() {
       >
         <Text style={styles.loginText}>Log In</Text>
       </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.loginButton}
-        onPress={() => router.push("/Homepage/Dashboard")}
-      >
-        <Text style={styles.loginText}>Go to Dashboard</Text>
-      </TouchableOpacity>
+
     </View>
   );
 }

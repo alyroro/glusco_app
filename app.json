@@ -10,7 +10,11 @@
     "newArchEnabled": true,
     "ios": {
       "bundleIdentifier": "com.jarmen24.glusco",
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Allow Glusco to access your camera to scan medical records and autofill your data.",
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -21,7 +25,11 @@
       },
       "package": "com.jarmen24.glusco",
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "output": "static",
@@ -41,7 +49,14 @@
           }
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Glusco to access your camera to scan medical records."
+        }
+      ],
+      "./plugins/withTextRecognition.js"
     ],
     "experiments": {
       "typedRoutes": true,
@@ -50,8 +65,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "04d7b34f-47b9-4339-9479-da68ea06c7a6"
+        "projectId": "d5d69d2b-8326-42b8-b031-63af3513ac91"
       }
-    }
+    },
+    "owner": "alyplbn"
   }
 }
