@@ -36,24 +36,9 @@ export default function DietaryHabits({
   };
 
   const questions = [
-    { id: "fruits", question: "How often do you consume fruits?" },
     { id: "vegetables", question: "How often do you consume vegetables?" },
     { id: "sweets", question: "How often do you eat sweets?" },
     { id: "fried", question: "How often do you eat fried foods?" },
-    {
-      id: "fastfood",
-      question: "How often do you eat fast foods (e.g. Jollibee)?",
-    },
-    {
-      id: "processed",
-      question:
-        "How often do you eat processed foods (e.g. hotdog, sausage, bacon, canned meat)?",
-    },
-    {
-      id: "softdrink",
-      question:
-        "How often do you consume sugar-sweetened drinks (soft drinks, sweetened coffee/tea, juice)?",
-    },
     {
       id: "weight_concern",
       question:

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import supabase from "../api/client";
 import { insertAnalysisToDB } from "../api/userGemini";
@@ -54,37 +54,39 @@ export default function SurveyForm() {
           fbs: latestForm?.fbs || "",
           cholesterol: latestForm?.cholesterol || "",
           hdl: latestForm?.hdl || "",
+          knowbgl: latestForm?.knowbgl || "",
         },
         dietaryHabits: {
-          fruits: 0,
-          vegetables: 0,
-          fried: 0,
-          sweets: 0,
-          fastfood: 0,
-          processed: 0,
-          softdrink: 0,
-          weight_concern: 0,
+          // fruits: 0,
+          vegetables: latestForm?.vegetables || 0,
+          fried: latestForm?.fried || 0,
+          sweets: latestForm?.sweets || 0,
+          // fastfood: 0,
+          // processed: 0,
+          // softdrink: 0,
+          weight_concern: latestForm?.weight_concern || 0,
         },
         physicalActivity: {
-          exercise_times: 4,
-          exercise_duration: 5,
-          sitting: 0,
-          main_activity: 0,
-          mode_of_transpo: 0,
-          doesExercise: null,
+          // exercise_times: 4,
+          exercise_duration: latestForm?.exercise_duration || 0,
+          sitting: latestForm?.sitting || 0,
+          // main_activity: 0,
+          mode_of_transpo: latestForm?.mode_of_transpo || 0,
+          doesExercise: latestForm?.doesExercise || null,
           exercise_types: [],
         },
         sleepSubstance: {
-          sleep_hours: 0,
-          sleep_cigarette: 0,
-          sleep_alcohol: 0,
+          // sleep_hours: 0,
+          // sleep_cigarette: 0,
+          sleep_alcohol: latestForm?.sleep_alcohol || 0,
         },
         familyHistory: {
-          fh_father: 0,
-          fh_mother: 0,
-          fh_sister: 0,
-          fh_brother: 0,
-          fh_extended: 0,
+          // fh_father: 0,
+          // fh_mother: 0,
+          // fh_sister: 0,
+          // fh_brother: 0,
+          // fh_extended: 0,
+          any_family_diabetes: latestForm?.any_family_diabetes || null,
         },
       });
     }
@@ -138,67 +140,100 @@ export default function SurveyForm() {
   const isBasicInfoValid = async () => {
     const info = formData.basicInfo;
 
-    const usernameRegex = /^[a-zA-Z0-9_]+$/;
     // Numbers: Allows only digits and a single decimal point
     const numericRegex = /^\d*\.?\d+$/;
 
-    const numericFields = [
-      { label: "Age", value: info.age },
-      { label: "Height", value: info.height },
-      { label: "Weight", value: info.weight },
-      { label: "Waist", value: info.waist },
-      { label: "Hip", value: info.hip },
-      { label: "Systolic", value: info.systolic },
-      { label: "Diastolic", value: info.diastolic },
-      { label: "HbA1c", value: info.hba1c },
-      { label: "FBS", value: info.fbs },
-      { label: "Cholesterol", value: info.cholesterol },
-      { label: "HDL", value: info.hdl },
-    ];
-
-    for (const field of numericFields) {
-      if (!numericRegex.test(field.value)) {
-        alert(
-          `Invalid characters in ${field.label}. Please enter numbers only.`,
-        );
-        return false;
-      }
-    }
-
-    // 1. Check if fields are empty FIRST (Local check is faster)
     const allFieldsFilled =
-      String(info.age).trim() !== "" && // Fixes the error
+      info.username.trim() !== "" &&
+      info.age.trim() !== "" &&
       info.gender !== 0 &&
-      String(info.height).trim() !== "" &&
-      String(info.weight).trim() !== "" &&
-      String(info.waist).trim() !== "" &&
-      String(info.hip).trim() !== "" &&
-      String(info.systolic).trim() !== "" &&
-      String(info.diastolic).trim() !== "" &&
-      String(info.hba1c).trim() !== "" &&
-      String(info.fbs).trim() !== "" &&
-      String(info.cholesterol).trim() !== "" &&
-      String(info.hdl).trim() !== "";
+      info.knowbgl.trim() !== "";
 
     if (!allFieldsFilled) {
       alert("Please fill in all fields.");
       return false;
     }
+    if (info.knowbgl === "1") {
+      const numericFields = [
+        { label: "Age", value: info.age },
+        { label: "Height", value: info.height },
+        { label: "Weight", value: info.weight },
+        { label: "Waist", value: info.waist },
+        { label: "Hip", value: info.hip },
+        { label: "Systolic", value: info.systolic },
+        { label: "Diastolic", value: info.diastolic },
+        { label: "HbA1c", value: info.hba1c },
+        { label: "FBS", value: info.fbs },
+        { label: "Cholesterol", value: info.cholesterol },
+        { label: "HDL", value: info.hdl },
+      ];
 
-    // 2. Check Username Availability (Network check)
-    const { data: existingUser, error: fetchError } = await supabase
-      .from("users")
-      .select("username, email")
-      .eq("username", info.username.trim())
-      .maybeSingle(); // maybeSingle doesn't throw an error if 0 rows found
+      for (const field of numericFields) {
+        if (!numericRegex.test(field.value!)) {
+          alert(
+            `Invalid characters in ${field.label}. Please enter numbers only.`,
+          );
+          return false;
+        }
+      }
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+      // 1. Check if fields are empty FIRST (Local check is faster)
+      const allFieldsFilled =
+        info.username.trim() !== "" &&
+        info.age.trim() !== "" &&
+        info.gender !== 0 &&
+        info.height.trim() !== "" &&
+        info.weight.trim() !== "" &&
+        info.waist.trim() !== "" &&
+        info.hip.trim() !== "" &&
+        info.systolic.trim() !== "" &&
+        info.diastolic.trim() !== "" &&
+        info.hba1c?.trim() !== "" &&
+        info.fbs?.trim() !== "" &&
+        info.cholesterol?.trim() !== "" &&
+        info.hdl?.trim() !== "";
 
-    if (existingUser && existingUser.email !== user?.email) {
-      alert("This username is already taken. Please choose another one.");
-      return false;
+      if (!allFieldsFilled) {
+        alert("Please fill in all fields.");
+        return false;
+      }
+    }
+    if (info.knowbgl === "0") {
+      const numericFields = [
+        { label: "Age", value: info.age },
+        { label: "Height", value: info.height },
+        { label: "Weight", value: info.weight },
+        { label: "Waist", value: info.waist },
+        { label: "Hip", value: info.hip },
+        { label: "Systolic", value: info.systolic },
+        { label: "Diastolic", value: info.diastolic },
+      ];
+
+      for (const field of numericFields) {
+        if (!numericRegex.test(field.value)) {
+          alert(
+            `Invalid characters in ${field.label}. Please enter numbers only.`,
+          );
+          return false;
+        }
+      }
+
+      // 1. Check if fields are empty FIRST (Local check is faster)
+      const allFieldsFilled =
+        info.username.trim() !== "" &&
+        info.age.trim() !== "" &&
+        info.gender !== 0 &&
+        info.height.trim() !== "" &&
+        info.weight.trim() !== "" &&
+        info.waist.trim() !== "" &&
+        info.hip.trim() !== "" &&
+        info.systolic.trim() !== "" &&
+        info.diastolic.trim() !== "";
+
+      if (!allFieldsFilled) {
+        alert("Please fill in all fields.");
+        return false;
+      }
     }
 
     return true;
@@ -208,13 +243,13 @@ export default function SurveyForm() {
     const d = formData.dietaryHabits;
 
     return (
-      d.fruits !== 0 &&
+      // d.fruits !== 0 &&
       d.vegetables !== 0 &&
       d.fried !== 0 &&
       d.sweets !== 0 &&
-      d.fastfood !== 0 &&
-      d.processed !== 0 &&
-      d.softdrink !== 0 &&
+      // d.fastfood !== 0 &&
+      // d.processed !== 0 &&
+      // d.softdrink !== 0 &&
       d.weight_concern !== 0
     );
   };
@@ -222,32 +257,43 @@ export default function SurveyForm() {
   const isPhysicalActivityValid = () => {
     const p = formData.physicalActivity;
 
-    return (
-      p.exercise_times !== 0 &&
-      p.exercise_duration !== 0 &&
-      p.sitting !== 0 &&
-      p.main_activity !== 0 &&
-      p.mode_of_transpo !== 0
-    );
+    if (p.doesExercise === 1) {
+      return (
+        // p.exercise_times !== 0 &&
+        p.exercise_duration !== 0 &&
+        p.sitting !== 0 &&
+        // p.main_activity !== 0 &&
+        p.mode_of_transpo !== 0
+      );
+    }
+    if (p.doesExercise === 2) {
+      return (
+        // p.exercise_times !== 0 &&
+        // p.exercise_duration !== 0 &&
+        p.sitting !== 0 &&
+        // p.main_activity !== 0 &&
+        p.mode_of_transpo !== 0
+      );
+    }
+    return p.doesExercise !== null;
   };
 
   const isSleepSubstanceValid = () => {
     const s = formData.sleepSubstance;
 
-    return (
-      s.sleep_hours !== 0 && s.sleep_cigarette !== 0 && s.sleep_alcohol !== 0
-    );
+    return s.sleep_alcohol !== 0;
   };
 
   const isFamilyHistoryValid = () => {
     const f = formData.familyHistory;
 
     return (
-      f.fh_father !== 0 &&
-      f.fh_mother !== 0 &&
-      f.fh_sister !== 0 &&
-      f.fh_brother !== 0 &&
-      f.fh_extended !== 0
+      // f.fh_father !== 0 &&
+      // f.fh_mother !== 0 &&
+      // f.fh_sister !== 0 &&
+      // f.fh_brother !== 0 &&
+      // f.fh_extended !== 0 &&
+      f.any_family_diabetes !== null
     );
   };
 
@@ -302,10 +348,13 @@ export default function SurveyForm() {
       hip: parseFloat(formData.basicInfo.hip),
       systolic: parseInt(formData.basicInfo.systolic),
       diastolic: parseInt(formData.basicInfo.diastolic),
-      hba1c: parseFloat(formData.basicInfo.hba1c),
-      fbs: parseFloat(formData.basicInfo.fbs),
-      cholesterol: parseFloat(formData.basicInfo.cholesterol),
-      hdl: parseFloat(formData.basicInfo.hdl),
+      knowbgl: parseInt(formData.basicInfo.knowbgl),
+      hba1c: parseFloat(formData.basicInfo.hba1c?.toString() || "0"),
+      fbs: parseFloat(formData.basicInfo.fbs?.toString() || "0"),
+      cholesterol: parseFloat(
+        formData.basicInfo.cholesterol?.toString() || "0",
+      ),
+      hdl: parseFloat(formData.basicInfo.hdl?.toString() || "0"),
       doesExercise: formData.physicalActivity.doesExercise,
     };
 
@@ -313,7 +362,7 @@ export default function SurveyForm() {
       setLoading(true);
       console.log(flattenedData);
       const response = await fetch(
-        "https://predictive-model-diabetes.onrender.com/predict",
+        "https://thesisdiabetes-production.up.railway.app/predict2",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -350,52 +399,37 @@ export default function SurveyForm() {
       hip: parseFloat(formData.basicInfo.hip) || 0,
       systolic: parseFloat(formData.basicInfo.systolic) || 0,
       diastolic: parseFloat(formData.basicInfo.diastolic) || 0,
-      hba1c: parseFloat(formData.basicInfo.hba1c) || 0,
-      fbs: parseFloat(formData.basicInfo.fbs) || 0,
-      cholesterol: parseFloat(formData.basicInfo.cholesterol) || 0,
-      hdl: parseFloat(formData.basicInfo.hdl) || 0,
+      hba1c: parseFloat(formData.basicInfo.hba1c?.toString() || "0"),
+      fbs: parseFloat(formData.basicInfo.fbs?.toString() || "0"),
+      cholesterol: parseFloat(
+        formData.basicInfo.cholesterol?.toString() || "0",
+      ),
+      hdl: parseFloat(formData.basicInfo.hdl?.toString() || "0"),
       // Dietary Habits (Convert category IDs to Floats)
-      fruits: parseFloat(formData.dietaryHabits.fruits.toString()),
       vegetables: parseFloat(formData.dietaryHabits.vegetables.toString()),
       fried: parseFloat(formData.dietaryHabits.fried.toString()),
       sweets: parseFloat(formData.dietaryHabits.sweets.toString()),
-      fastfood: parseFloat(formData.dietaryHabits.fastfood.toString()),
-      processed: parseFloat(formData.dietaryHabits.processed.toString()),
-      softdrink: parseFloat(formData.dietaryHabits.softdrink.toString()),
       weight_concern: parseFloat(
         formData.dietaryHabits.weight_concern.toString(),
       ),
 
       // Physical Activity
-      exercise_times: parseFloat(
-        formData.physicalActivity.exercise_times.toString(),
-      ),
+
       exercise_duration: parseFloat(
         formData.physicalActivity.exercise_duration.toString(),
       ),
       sitting: parseFloat(formData.physicalActivity.sitting.toString()),
-      main_activity: parseFloat(
-        formData.physicalActivity.main_activity.toString(),
-      ),
+
       mode_of_transpo: parseFloat(
         formData.physicalActivity.mode_of_transpo.toString(),
       ),
 
       // Sleep & Substance
-      sleep_hours: parseFloat(formData.sleepSubstance.sleep_hours.toString()),
-      sleep_cigarette: parseFloat(
-        formData.sleepSubstance.sleep_cigarette.toString(),
-      ),
+
       sleep_alcohol: parseFloat(
         formData.sleepSubstance.sleep_alcohol.toString(),
       ),
 
-      // Family History
-      fh_father: parseFloat(formData.familyHistory.fh_father.toString()),
-      fh_mother: parseFloat(formData.familyHistory.fh_mother.toString()),
-      fh_sister: parseFloat(formData.familyHistory.fh_sister.toString()),
-      fh_brother: parseFloat(formData.familyHistory.fh_brother.toString()),
-      fh_extended: parseFloat(formData.familyHistory.fh_extended.toString()),
       user_id: profile?.id || null,
     };
     try {

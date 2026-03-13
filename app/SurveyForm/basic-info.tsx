@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import TextRecognition from '@react-native-ml-kit/text-recognition';
+import TextRecognition from "@react-native-ml-kit/text-recognition";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
@@ -15,7 +15,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
 
 /* ============================================================
    NEW: CLEAN OCR → DATA EXTRACTION HELPER
@@ -60,7 +59,6 @@ const extractBasicInfo = (raw: string) => {
   return result;
 };
 
-
 /* ============================================================
    MAIN COMPONENT
    ============================================================ */
@@ -72,14 +70,16 @@ export default function BasicInfo({ data, setFormData, onNext, loading }: any) {
   const totalSteps = 6;
   const progressPercentage = (currentStep / totalSteps) * 100;
 
-
   /* ============================================================
      UPDATED CAMERA → OCR → DATA FLOW
      ============================================================ */
   const handleScan = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== "granted") {
-      Alert.alert("Permission Required", "Camera access is needed to scan records.");
+      Alert.alert(
+        "Permission Required",
+        "Camera access is needed to scan records.",
+      );
       return;
     }
 
@@ -102,21 +102,51 @@ export default function BasicInfo({ data, setFormData, onNext, loading }: any) {
               basicInfo: { ...prev.basicInfo, ...parsed },
             }));
 
-            Alert.alert("Scan Success", "We've accurately filled in your details.");
+            Alert.alert(
+              "Scan Success",
+              "We've accurately filled in your details.",
+            );
           } else {
-            Alert.alert("No Data Found", "We couldn't detect any valid information.");
+            Alert.alert(
+              "No Data Found",
+              "We couldn't detect any valid information.",
+            );
           }
         } else {
           Alert.alert("Scan Failed", "No text detected in the image.");
         }
       } catch (err) {
-        Alert.alert("Scan Error", "Could not read text. Please retake a clear photo.");
+        Alert.alert(
+          "Scan Error",
+          "Could not read text. Please retake a clear photo.",
+        );
       } finally {
         setIsScanning(false);
       }
     }
   };
+  const handleSelect = (questionId: string, value: any) => {
+    setFormData((prev: any) => {
+      const stringValue = String(value);
+      const updatedActivity = {
+        ...prev.basicInfo,
+        [questionId]: stringValue,
+      };
 
+      // RESET LOGIC: If user changes "Yes" to "No", clear the exercise-specific data
+      if (questionId === "knowbgl" && value === "0") {
+        delete updatedActivity.hba1c;
+        delete updatedActivity.cholesterol;
+        delete updatedActivity.fbs;
+        delete updatedActivity.hdl;
+      }
+
+      return {
+        ...prev,
+        basicInfo: updatedActivity,
+      };
+    });
+  };
 
   /* ============================================================
      UI SECTION — UNTOUCHED
@@ -126,7 +156,10 @@ export default function BasicInfo({ data, setFormData, onNext, loading }: any) {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={{ flex: 1 }}
     >
-      <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContainer}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.container}>
           {/* Header & Progress */}
           <View style={styles.headerContainer}>
@@ -137,7 +170,12 @@ export default function BasicInfo({ data, setFormData, onNext, loading }: any) {
               <Ionicons name="arrow-back" size={24} color="#0B1956" />
             </TouchableOpacity>
             <View style={styles.progressBarBackground}>
-              <View style={[styles.progressBarFill, { width: `${progressPercentage}%` }]} />
+              <View
+                style={[
+                  styles.progressBarFill,
+                  { width: `${progressPercentage}%` },
+                ]}
+              />
             </View>
           </View>
 
@@ -194,10 +232,13 @@ export default function BasicInfo({ data, setFormData, onNext, loading }: any) {
 
           {/* Gender */}
           <View style={styles.inputCard}>
-            <Text style={styles.label}>Sex</Text>
+            <Text style={styles.label}>Gender</Text>
             <View style={styles.sexContainer}>
               <TouchableOpacity
-                style={[styles.sexOption, data.gender === 2 && styles.selectedOption]}
+                style={[
+                  styles.sexOption,
+                  data.gender === 2 && styles.selectedOption,
+                ]}
                 onPress={() =>
                   setFormData((prev: any) => ({
                     ...prev,
@@ -205,13 +246,21 @@ export default function BasicInfo({ data, setFormData, onNext, loading }: any) {
                   }))
                 }
               >
-                <Text style={[styles.sexText, data.gender === 2 && styles.selectedText]}>
+                <Text
+                  style={[
+                    styles.sexText,
+                    data.gender === 2 && styles.selectedText,
+                  ]}
+                >
                   Female
                 </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={[styles.sexOption, data.gender === 1 && styles.selectedOption]}
+                style={[
+                  styles.sexOption,
+                  data.gender === 1 && styles.selectedOption,
+                ]}
                 onPress={() =>
                   setFormData((prev: any) => ({
                     ...prev,
@@ -219,168 +268,304 @@ export default function BasicInfo({ data, setFormData, onNext, loading }: any) {
                   }))
                 }
               >
-                <Text style={[styles.sexText, data.gender === 1 && styles.selectedText]}>
+                <Text
+                  style={[
+                    styles.sexText,
+                    data.gender === 1 && styles.selectedText,
+                  ]}
+                >
                   Male
                 </Text>
               </TouchableOpacity>
             </View>
           </View>
-
-          {/* Height */}
+          {/* Question 1: ALWAYS VISIBLE */}
           <View style={styles.inputCard}>
-            <Text style={styles.label}>Height (cm)</Text>
-            <TextInput
-              style={styles.input}
-              keyboardType="numeric"
-              value={data.height ? String(data.height) : ""}
-              onChangeText={(text) =>
-                setFormData((prev: any) => ({
-                  ...prev,
-                  basicInfo: { ...prev.basicInfo, height: text },
-                }))
-              }
-            />
+            <Text style={styles.label}>
+              Do you know your blood glucose levels?
+            </Text>
+            {["Yes", "No"].map((option) => {
+              const val = option === "Yes" ? "1" : "0";
+              return (
+                <TouchableOpacity
+                  key={option}
+                  style={styles.optionRow}
+                  onPress={() => handleSelect("knowbgl", val)}
+                >
+                  <View
+                    style={[
+                      styles.radioCircle,
+                      String(data.knowbgl) === String(val) &&
+                        styles.radioSelected,
+                    ]}
+                  />
+                  <Text style={styles.optionText}>{option}</Text>
+                </TouchableOpacity>
+              );
+            })}
           </View>
+          {data.knowbgl === "1" && (
+            <>
+              {/* Height */}
+              <View style={styles.inputCard}>
+                <Text style={styles.label}>Height (cm)</Text>
+                <TextInput
+                  style={styles.input}
+                  keyboardType="numeric"
+                  value={data.height ? String(data.height) : ""}
+                  onChangeText={(text) =>
+                    setFormData((prev: any) => ({
+                      ...prev,
+                      basicInfo: { ...prev.basicInfo, height: text },
+                    }))
+                  }
+                />
+              </View>
 
-          {/* Weight */}
-          <View style={styles.inputCard}>
-            <Text style={styles.label}>Weight (kg)</Text>
-            <TextInput
-              style={styles.input}
-              keyboardType="numeric"
-              value={data.weight ? String(data.weight) : ""}
-              onChangeText={(text) =>
-                setFormData((prev: any) => ({
-                  ...prev,
-                  basicInfo: { ...prev.basicInfo, weight: text },
-                }))
-              }
-            />
-          </View>
+              {/* Weight */}
+              <View style={styles.inputCard}>
+                <Text style={styles.label}>Weight (kg)</Text>
+                <TextInput
+                  style={styles.input}
+                  keyboardType="numeric"
+                  value={data.weight ? String(data.weight) : ""}
+                  onChangeText={(text) =>
+                    setFormData((prev: any) => ({
+                      ...prev,
+                      basicInfo: { ...prev.basicInfo, weight: text },
+                    }))
+                  }
+                />
+              </View>
 
-          {/* Waist */}
-          <View style={styles.inputCard}>
-            <Text style={styles.label}>Waist Circumference (cm)</Text>
-            <TextInput
-              style={styles.input}
-              keyboardType="numeric"
-              value={data.waist ? String(data.waist) : ""}
-              onChangeText={(text) =>
-                setFormData((prev: any) => ({
-                  ...prev,
-                  basicInfo: { ...prev.basicInfo, waist: text },
-                }))
-              }
-            />
-          </View>
+              {/* Waist */}
+              <View style={styles.inputCard}>
+                <Text style={styles.label}>Waist Circumference (cm)</Text>
+                <TextInput
+                  style={styles.input}
+                  keyboardType="numeric"
+                  value={data.waist ? String(data.waist) : ""}
+                  onChangeText={(text) =>
+                    setFormData((prev: any) => ({
+                      ...prev,
+                      basicInfo: { ...prev.basicInfo, waist: text },
+                    }))
+                  }
+                />
+              </View>
 
-          {/* Hip */}
-          <View style={styles.inputCard}>
-            <Text style={styles.label}>Hip Circumference (cm)</Text>
-            <TextInput
-              style={styles.input}
-              keyboardType="numeric"
-              value={data.hip ? String(data.hip) : ""}
-              onChangeText={(text) =>
-                setFormData((prev: any) => ({
-                  ...prev,
-                  basicInfo: { ...prev.basicInfo, hip: text },
-                }))
-              }
-            />
-          </View>
+              {/* Hip */}
+              <View style={styles.inputCard}>
+                <Text style={styles.label}>Hip Circumference (cm)</Text>
+                <TextInput
+                  style={styles.input}
+                  keyboardType="numeric"
+                  value={data.hip ? String(data.hip) : ""}
+                  onChangeText={(text) =>
+                    setFormData((prev: any) => ({
+                      ...prev,
+                      basicInfo: { ...prev.basicInfo, hip: text },
+                    }))
+                  }
+                />
+              </View>
 
-          {/* Blood Pressure */}
-          <View style={styles.inputCard}>
-            <Text style={styles.label}>Blood Pressure (Systolic / Diastolic)</Text>
-            <View style={styles.bpRow}>
-              <TextInput
-                style={[styles.input, styles.bpInput, { marginRight: 8 }]}
-                placeholder="Sys"
-                keyboardType="numeric"
-                value={data.systolic ? String(data.systolic) : ""}
-                onChangeText={(text) =>
-                  setFormData((prev: any) => ({
-                    ...prev,
-                    basicInfo: { ...prev.basicInfo, systolic: text },
-                  }))
-                }
-              />
-              <TextInput
-                style={[styles.input, styles.bpInput]}
-                placeholder="Dia"
-                keyboardType="numeric"
-                value={data.diastolic ? String(data.diastolic) : ""}
-                onChangeText={(text) =>
-                  setFormData((prev: any) => ({
-                    ...prev,
-                    basicInfo: { ...prev.basicInfo, diastolic: text },
-                  }))
-                }
-              />
-            </View>
-          </View>
+              {/* Blood Pressure */}
+              <View style={styles.inputCard}>
+                <Text style={styles.label}>
+                  Blood Pressure (Systolic / Diastolic)
+                </Text>
+                <View style={styles.bpRow}>
+                  <TextInput
+                    style={[styles.input, styles.bpInput, { marginRight: 8 }]}
+                    placeholder="Sys"
+                    keyboardType="numeric"
+                    value={data.systolic ? String(data.systolic) : ""}
+                    onChangeText={(text) =>
+                      setFormData((prev: any) => ({
+                        ...prev,
+                        basicInfo: { ...prev.basicInfo, systolic: text },
+                      }))
+                    }
+                  />
+                  <TextInput
+                    style={[styles.input, styles.bpInput]}
+                    placeholder="Dia"
+                    keyboardType="numeric"
+                    value={data.diastolic ? String(data.diastolic) : ""}
+                    onChangeText={(text) =>
+                      setFormData((prev: any) => ({
+                        ...prev,
+                        basicInfo: { ...prev.basicInfo, diastolic: text },
+                      }))
+                    }
+                  />
+                </View>
+              </View>
 
-          {/* Lab Values */}
-          <View style={styles.inputCard}>
-            <Text style={styles.label}>HBA1C (%)</Text>
-            <TextInput
-              style={styles.input}
-              keyboardType="numeric"
-              value={data.hba1c ? String(data.hba1c) : ""}
-              onChangeText={(text) =>
-                setFormData((prev: any) => ({
-                  ...prev,
-                  basicInfo: { ...prev.basicInfo, hba1c: text },
-                }))
-              }
-            />
-          </View>
+              {/* Lab Values */}
+              <View style={styles.inputCard}>
+                <Text style={styles.label}>HBA1C (%)</Text>
+                <TextInput
+                  style={styles.input}
+                  keyboardType="numeric"
+                  value={data.hba1c ? String(data.hba1c) : ""}
+                  onChangeText={(text) =>
+                    setFormData((prev: any) => ({
+                      ...prev,
+                      basicInfo: { ...prev.basicInfo, hba1c: text },
+                    }))
+                  }
+                />
+              </View>
 
-          <View style={styles.inputCard}>
-            <Text style={styles.label}>FBS (mg/dL)</Text>
-            <TextInput
-              style={styles.input}
-              keyboardType="numeric"
-              value={data.fbs ? String(data.fbs) : ""}
-              onChangeText={(text) =>
-                setFormData((prev: any) => ({
-                  ...prev,
-                  basicInfo: { ...prev.basicInfo, fbs: text },
-                }))
-              }
-            />
-          </View>
+              <View style={styles.inputCard}>
+                <Text style={styles.label}>FBS (mg/dL)</Text>
+                <TextInput
+                  style={styles.input}
+                  keyboardType="numeric"
+                  value={data.fbs ? String(data.fbs) : ""}
+                  onChangeText={(text) =>
+                    setFormData((prev: any) => ({
+                      ...prev,
+                      basicInfo: { ...prev.basicInfo, fbs: text },
+                    }))
+                  }
+                />
+              </View>
 
-          <View style={styles.inputCard}>
-            <Text style={styles.label}>Total Cholesterol (mg/dL)</Text>
-            <TextInput
-              style={styles.input}
-              keyboardType="numeric"
-              value={data.cholesterol ? String(data.cholesterol) : ""}
-              onChangeText={(text) =>
-                setFormData((prev: any) => ({
-                  ...prev,
-                  basicInfo: { ...prev.basicInfo, cholesterol: text },
-                }))
-              }
-            />
-          </View>
+              <View style={styles.inputCard}>
+                <Text style={styles.label}>Total Cholesterol (mg/dL)</Text>
+                <TextInput
+                  style={styles.input}
+                  keyboardType="numeric"
+                  value={data.cholesterol ? String(data.cholesterol) : ""}
+                  onChangeText={(text) =>
+                    setFormData((prev: any) => ({
+                      ...prev,
+                      basicInfo: { ...prev.basicInfo, cholesterol: text },
+                    }))
+                  }
+                />
+              </View>
 
-          <View style={styles.inputCard}>
-            <Text style={styles.label}>HDL (mg/dL)</Text>
-            <TextInput
-              style={styles.input}
-              keyboardType="numeric"
-              value={data.hdl ? String(data.hdl) : ""}
-              onChangeText={(text) =>
-                setFormData((prev: any) => ({
-                  ...prev,
-                  basicInfo: { ...prev.basicInfo, hdl: text },
-                }))
-              }
-            />
-          </View>
+              <View style={styles.inputCard}>
+                <Text style={styles.label}>HDL (mg/dL)</Text>
+                <TextInput
+                  style={styles.input}
+                  keyboardType="numeric"
+                  value={data.hdl ? String(data.hdl) : ""}
+                  onChangeText={(text) =>
+                    setFormData((prev: any) => ({
+                      ...prev,
+                      basicInfo: { ...prev.basicInfo, hdl: text },
+                    }))
+                  }
+                />
+              </View>
+            </>
+          )}
+
+          {data.knowbgl === "0" && (
+            <>
+              {/* Height */}
+              <View style={styles.inputCard}>
+                <Text style={styles.label}>Height (cm)</Text>
+                <TextInput
+                  style={styles.input}
+                  keyboardType="numeric"
+                  value={data.height ? String(data.height) : ""}
+                  onChangeText={(text) =>
+                    setFormData((prev: any) => ({
+                      ...prev,
+                      basicInfo: { ...prev.basicInfo, height: text },
+                    }))
+                  }
+                />
+              </View>
+
+              {/* Weight */}
+              <View style={styles.inputCard}>
+                <Text style={styles.label}>Weight (kg)</Text>
+                <TextInput
+                  style={styles.input}
+                  keyboardType="numeric"
+                  value={data.weight ? String(data.weight) : ""}
+                  onChangeText={(text) =>
+                    setFormData((prev: any) => ({
+                      ...prev,
+                      basicInfo: { ...prev.basicInfo, weight: text },
+                    }))
+                  }
+                />
+              </View>
+
+              {/* Waist */}
+              <View style={styles.inputCard}>
+                <Text style={styles.label}>Waist Circumference (cm)</Text>
+                <TextInput
+                  style={styles.input}
+                  keyboardType="numeric"
+                  value={data.waist ? String(data.waist) : ""}
+                  onChangeText={(text) =>
+                    setFormData((prev: any) => ({
+                      ...prev,
+                      basicInfo: { ...prev.basicInfo, waist: text },
+                    }))
+                  }
+                />
+              </View>
+
+              {/* Hip */}
+              <View style={styles.inputCard}>
+                <Text style={styles.label}>Hip Circumference (cm)</Text>
+                <TextInput
+                  style={styles.input}
+                  keyboardType="numeric"
+                  value={data.hip ? String(data.hip) : ""}
+                  onChangeText={(text) =>
+                    setFormData((prev: any) => ({
+                      ...prev,
+                      basicInfo: { ...prev.basicInfo, hip: text },
+                    }))
+                  }
+                />
+              </View>
+
+              {/* Blood Pressure */}
+              <View style={styles.inputCard}>
+                <Text style={styles.label}>
+                  Blood Pressure (Systolic / Diastolic)
+                </Text>
+                <View style={styles.bpRow}>
+                  <TextInput
+                    style={[styles.input, styles.bpInput, { marginRight: 8 }]}
+                    placeholder="Sys"
+                    keyboardType="numeric"
+                    value={data.systolic ? String(data.systolic) : ""}
+                    onChangeText={(text) =>
+                      setFormData((prev: any) => ({
+                        ...prev,
+                        basicInfo: { ...prev.basicInfo, systolic: text },
+                      }))
+                    }
+                  />
+                  <TextInput
+                    style={[styles.input, styles.bpInput]}
+                    placeholder="Dia"
+                    keyboardType="numeric"
+                    value={data.diastolic ? String(data.diastolic) : ""}
+                    onChangeText={(text) =>
+                      setFormData((prev: any) => ({
+                        ...prev,
+                        basicInfo: { ...prev.basicInfo, diastolic: text },
+                      }))
+                    }
+                  />
+                </View>
+              </View>
+            </>
+          )}
 
           <TouchableOpacity style={styles.continueButton} onPress={onNext}>
             {loading ? (
@@ -395,19 +580,45 @@ export default function BasicInfo({ data, setFormData, onNext, loading }: any) {
   );
 }
 
-
 /* ============================================================
    STYLES — UNCHANGED
    ============================================================ */
 const styles = StyleSheet.create({
-  scrollContainer: { flexGrow: 1, backgroundColor: "#F8F3ED", paddingVertical: 40 },
+  scrollContainer: {
+    flexGrow: 1,
+    backgroundColor: "#F8F3ED",
+    paddingVertical: 40,
+  },
   container: { paddingHorizontal: 30 },
-  headerContainer: { flexDirection: "row", alignItems: "center", marginBottom: 25 },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 25,
+  },
   backButton: { marginRight: 10 },
-  progressBarBackground: { flex: 1, height: 10, backgroundColor: "#D9D9D9", borderRadius: 6 },
-  progressBarFill: { height: "100%", backgroundColor: "#446CC3", borderRadius: 6 },
-  title: { fontSize: 22, fontWeight: "700", color: "#101623E6", marginBottom: 10 },
-  subtitle: { fontSize: 15, color: "#101623E6", marginBottom: 30, lineHeight: 20 },
+  progressBarBackground: {
+    flex: 1,
+    height: 10,
+    backgroundColor: "#D9D9D9",
+    borderRadius: 6,
+  },
+  progressBarFill: {
+    height: "100%",
+    backgroundColor: "#446CC3",
+    borderRadius: 6,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: "700",
+    color: "#101623E6",
+    marginBottom: 10,
+  },
+  subtitle: {
+    fontSize: 15,
+    color: "#101623E6",
+    marginBottom: 30,
+    lineHeight: 20,
+  },
   scanButton: {
     flexDirection: "row",
     backgroundColor: "#0B1956",
@@ -417,10 +628,30 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 25,
   },
-  scanButtonText: { color: "#FFF", fontWeight: "700", marginLeft: 10, fontSize: 16 },
-  inputCard: { backgroundColor: "#FFFFFF", borderRadius: 15, padding: 15, marginBottom: 20 },
-  label: { fontSize: 16, fontWeight: "600", color: "#101623E6", marginBottom: 8 },
-  input: { backgroundColor: "#E5E7EB", borderRadius: 32, paddingHorizontal: 15, height: 40 },
+  scanButtonText: {
+    color: "#FFF",
+    fontWeight: "700",
+    marginLeft: 10,
+    fontSize: 16,
+  },
+  inputCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 15,
+    padding: 15,
+    marginBottom: 20,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#101623E6",
+    marginBottom: 8,
+  },
+  input: {
+    backgroundColor: "#E5E7EB",
+    borderRadius: 32,
+    paddingHorizontal: 15,
+    height: 40,
+  },
   sexContainer: { flexDirection: "row", justifyContent: "space-around" },
   sexOption: {
     backgroundColor: "rgba(229, 231, 235, 0.7)",
@@ -435,8 +666,39 @@ const styles = StyleSheet.create({
   selectedOption: { backgroundColor: "#0B1956" },
   sexText: { color: "#000", fontSize: 14 },
   selectedText: { color: "#FFF", fontWeight: "600" },
-  continueButton: { backgroundColor: "#0B1956", borderRadius: 32, paddingVertical: 15, marginTop: 30 },
-  continueText: { color: "#FFFFFF", fontSize: 16, fontWeight: "600", textAlign: "center" },
+  continueButton: {
+    backgroundColor: "#0B1956",
+    borderRadius: 32,
+    paddingVertical: 15,
+    marginTop: 30,
+  },
+  continueText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "600",
+    textAlign: "center",
+  },
   bpRow: { flexDirection: "row" },
   bpInput: { flex: 1 },
+  optionRow: { flexDirection: "row", alignItems: "center", marginBottom: 12 },
+  radioCircle: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 1.5,
+    borderColor: "#0B1956",
+    backgroundColor: "#E5E7EB",
+    marginRight: 10,
+  },
+  radioSelected: { backgroundColor: "#0B1956" },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderRadius: 5,
+    borderWidth: 1.5,
+    borderColor: "#0B1956",
+    marginRight: 10,
+  },
+  checkboxChecked: { backgroundColor: "#0B1956" },
+  optionText: { fontSize: 14, color: "#000", flexShrink: 1 },
 });

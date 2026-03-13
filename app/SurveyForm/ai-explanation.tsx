@@ -76,6 +76,9 @@ export default function AIExplanation({
                     />
                   </View>
                   <Text style={styles.taskLabelRow}>{task.label}</Text>
+                  <Text style={styles.taskLabelRowReasoning}>
+                    {task.reasoning}
+                  </Text>
                 </View>
               ))}
             </View>
@@ -159,37 +162,6 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     alignItems: "center",
     justifyContent: "center",
-  },
-  taskGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    marginBottom: 20,
-  },
-  taskCard: {
-    backgroundColor: "rgba(255, 255, 255, 0.15)", // Translucent to show background gradient
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.2)",
-    borderRadius: 20,
-    width: "48%",
-    padding: 16,
-    marginBottom: 12,
-    alignItems: "center",
-  },
-  taskIconCircle: {
-    backgroundColor: "#FFFFFF",
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  taskLabel: {
-    color: "#FFFFFF",
-    fontSize: 13,
-    fontWeight: "600",
-    textAlign: "center",
   },
   logoMain: {
     color: "#FFFFFF",
@@ -291,16 +263,6 @@ const styles = StyleSheet.create({
     gap: 10,
     marginBottom: 24,
   },
-  taskRowCard: {
-    flexDirection: "row", // Aligns icon and text in one line
-    alignItems: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.12)",
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.15)",
-    borderRadius: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-  },
   taskIconCircleSmall: {
     backgroundColor: "#FFFFFF",
     width: 32,
@@ -310,12 +272,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginRight: 15, // Gap between icon and text
   },
-  taskLabelRow: {
-    color: "#FFFFFF",
-    fontSize: 15,
-    fontWeight: "600",
-    flex: 1, // Ensures text takes up remaining space
-  },
   overlaySectionTitle: {
     fontSize: 14,
     fontWeight: "800",
@@ -323,5 +279,37 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     textTransform: "uppercase",
     letterSpacing: 1.2,
+  },
+  taskLabelColumn: {
+    flex: 1, // Crucial: lets the column fill the width so text can wrap
+    justifyContent: "center",
+  },
+  taskLabelRow: {
+    color: "#FFFFFF",
+    fontSize: 14, // Slightly smaller base font
+    fontWeight: "700",
+    marginBottom: 2, // Small gap before reasoning
+  },
+  taskLabelRowReasoning: {
+    color: "#FFFFFF",
+    fontSize: 12, // Slightly smaller base font
+    fontWeight: "400",
+    marginBottom: 2, // Small gap before reasoning
+  },
+  taskReasoningRow: {
+    color: "rgba(255, 255, 255, 0.7)", // Dimmed for hierarchy
+    fontSize: 12, // Smaller font size
+    fontWeight: "400",
+    lineHeight: 16, // Better readability in tight spaces
+  },
+  taskRowCard: {
+    flexDirection: "row",
+    alignItems: "flex-start", // Changed from 'center' to look better with multi-line text
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.15)",
+    borderRadius: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
   },
 });

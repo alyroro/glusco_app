@@ -194,9 +194,15 @@ export default function DashboardScreen() {
           <View style={[styles.iconBox, { backgroundColor: "#EFF6FF" }]}>
             <MaterialCommunityIcons name="water" size={22} color="#3B82F6" />
           </View>
-          <Text style={styles.cardLabel}>HbA1c</Text>
-          <Text style={styles.cardValue}>{latestForm.hba1c}</Text>
-          <Text style={styles.cardUnit}>mg/dL</Text>
+          <Text style={styles.cardLabel}>
+            {latestForm.hba1c === "0" ? "Waist Circumference" : "HbA1c"}
+          </Text>
+          <Text style={styles.cardValue}>
+            {latestForm.hba1c === "0" ? latestForm.waist : latestForm.hba1c}
+          </Text>
+          <Text style={styles.cardUnit}>
+            {latestForm.hba1c === "0" ? "cm" : "mg/dL"}
+          </Text>
         </View>
       </View>
 

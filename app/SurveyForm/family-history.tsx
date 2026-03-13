@@ -28,70 +28,81 @@ export default function FamilyHistory({
     }));
   };
 
+  // const mainFamilyQuestions = [
+  //   {
+  //     key: "fh_father",
+  //     label: "Father",
+  //     question:
+  //       "Has your father been diagnosed with Type 2 Diabetes? (If yes, indicate the age at diagnosis.)",
+  //     options: {
+  //       No: 1,
+  //       "Yes, before 40": 3,
+  //       "Yes, 40-59": 4,
+  //       "Yes, 60 or older": 5,
+  //       "Not sure": 2,
+  //     },
+  //   },
+  //   {
+  //     key: "fh_mother",
+  //     label: "Mother",
+  //     question:
+  //       "Has your mother been diagnosed with Type 2 Diabetes? (If yes, indicate the age at diagnosis.)",
+  //     options: {
+  //       No: 1,
+  //       "Yes, before 40": 3,
+  //       "Yes, 40-59": 4,
+  //       "Yes, 60 or older": 5,
+  //       "Not sure": 2,
+  //     },
+  //   },
+  //   {
+  //     key: "fh_sister",
+  //     label: "Sister",
+  //     question:
+  //       "Has your sister been diagnosed with Type 2 Diabetes? (If yes, indicate the age at diagnosis.)",
+  //     options: {
+  //       No: 1,
+  //       "Yes, before 40": 3,
+  //       "Yes, 40-59": 4,
+  //       "Yes, 60 or older": 5,
+  //       "Not sure": 2,
+  //     },
+  //   },
+  //   {
+  //     key: "fh_brother",
+  //     label: "Brother",
+  //     question:
+  //       "Has your brother been diagnosed with Type 2 Diabetes? (If yes, indicate the age at diagnosis.)",
+  //     options: {
+  //       No: 1,
+  //       "Yes, before 40": 3,
+  //       "Yes, 40-59": 4,
+  //       "Yes, 60 or older": 5,
+  //       "Not sure": 2,
+  //     },
+  //   },
+  // ];
+
+  // const additionalQuestions = [
+  //   {
+  //     key: "fh_extended",
+  //     question:
+  //       "Has anyone in your extended family (grandparents, aunts, uncles, cousins) been diagnosed with Type 2 Diabetes?",
+  //     options: { Yes: 3, No: 1, "Not sure": 2 },
+  //   },
+  // ];
   const mainFamilyQuestions = [
     {
-      key: "fh_father",
-      label: "Father",
+      key: "any_family_diabetes",
+      label: "Any Family Member",
       question:
-        "Has your father been diagnosed with Type 2 Diabetes? (If yes, indicate the age at diagnosis.)",
+        "Have any of your close family members (Father, Mother, or Siblings) ever been diagnosed with Type 2 Diabetes? ",
       options: {
-        No: 1,
-        "Yes, before 40": 3,
-        "Yes, 40-59": 4,
-        "Yes, 60 or older": 5,
-        "Not sure": 2,
-      },
-    },
-    {
-      key: "fh_mother",
-      label: "Mother",
-      question:
-        "Has your mother been diagnosed with Type 2 Diabetes? (If yes, indicate the age at diagnosis.)",
-      options: {
-        No: 1,
-        "Yes, before 40": 3,
-        "Yes, 40-59": 4,
-        "Yes, 60 or older": 5,
-        "Not sure": 2,
-      },
-    },
-    {
-      key: "fh_sister",
-      label: "Sister",
-      question:
-        "Has your sister been diagnosed with Type 2 Diabetes? (If yes, indicate the age at diagnosis.)",
-      options: {
-        No: 1,
-        "Yes, before 40": 3,
-        "Yes, 40-59": 4,
-        "Yes, 60 or older": 5,
-        "Not sure": 2,
-      },
-    },
-    {
-      key: "fh_brother",
-      label: "Brother",
-      question:
-        "Has your brother been diagnosed with Type 2 Diabetes? (If yes, indicate the age at diagnosis.)",
-      options: {
-        No: 1,
-        "Yes, before 40": 3,
-        "Yes, 40-59": 4,
-        "Yes, 60 or older": 5,
-        "Not sure": 2,
+        No: 0,
+        Yes: 1,
       },
     },
   ];
-
-  const additionalQuestions = [
-    {
-      key: "fh_extended",
-      question:
-        "Has anyone in your extended family (grandparents, aunts, uncles, cousins) been diagnosed with Type 2 Diabetes?",
-      options: { Yes: 3, No: 1, "Not sure": 2 },
-    },
-  ];
-
   const progressPercentage = 100;
 
   return (
@@ -152,7 +163,7 @@ export default function FamilyHistory({
           </View>
         ))}
 
-        {additionalQuestions.map((q) => (
+        {/* {additionalQuestions.map((q) => (
           <View key={q.key} style={styles.inputCard}>
             <Text style={styles.question}>{q.question}</Text>
             {Object.entries(q.options).map(([option, value]) => (
@@ -171,7 +182,7 @@ export default function FamilyHistory({
               </TouchableOpacity>
             ))}
           </View>
-        ))}
+        ))} */}
 
         {/* Generate Risk Button */}
         <TouchableOpacity style={styles.continueButton} onPress={onNext}>

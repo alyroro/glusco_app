@@ -81,13 +81,14 @@ export default function SleepSubstance({
           </View>
         </View>
 
-        <Text style={styles.title}>Sleep and Lifestyle Habits</Text>
+        <Text style={styles.title}>Alcohol Intake</Text>
         <Text style={styles.subtitle}>
-          Share how well you sleep and whether you smoke or drink.
+          Your alcohol consumption can impact your blood sugar levels and
+          overall health.
         </Text>
 
         {/* Sleep Hours Section */}
-        <View style={styles.inputCard}>
+        {/* <View style={styles.inputCard}>
           <Text style={styles.label}>
             How many hours of sleep do you usually get?
           </Text>
@@ -107,10 +108,10 @@ export default function SleepSubstance({
               <Text style={styles.optionText}>{option}</Text>
             </TouchableOpacity>
           ))}
-        </View>
+        </View> */}
 
         {/* Smoking Section */}
-        <View style={styles.inputCard}>
+        {/* <View style={styles.inputCard}>
           <Text style={styles.label}>Do you smoke cigarettes or vape?</Text>
           {Object.keys(smokingMap).map((option) => (
             <TouchableOpacity
@@ -128,7 +129,7 @@ export default function SleepSubstance({
               <Text style={styles.optionText}>{option}</Text>
             </TouchableOpacity>
           ))}
-        </View>
+        </View> */}
 
         {/* Alcohol Section */}
         <View style={styles.inputCard}>

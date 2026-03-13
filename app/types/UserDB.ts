@@ -35,7 +35,7 @@ export interface FormData {
   fbs: string;
   cholesterol: string;
   hdl: string;
-
+  knowbgl: string;
   fruits: number;
   vegetables: number;
   fried: number;
@@ -62,6 +62,7 @@ export interface FormData {
   fh_sister: number;
   fh_brother: number;
   fh_extended: number;
+  any_family_diabetes: number | null;
 }
 
 export default UserDB;

@@ -62,15 +62,6 @@ export default function PhysicalActivity({
 
   const exerciseQuestions = [
     {
-      id: "exercise_times",
-      question: "How often do you exercise?",
-      options: {
-        "1–2 times a week": 3,
-        "3–4 times a week": 2,
-        "5+ times a week": 1,
-      },
-    },
-    {
       id: "exercise_duration",
       question: "On average, how long is each session?",
       options: {
@@ -91,16 +82,6 @@ export default function PhysicalActivity({
         "3–6 hours": 2,
         "6–9 hours": 3,
         "More than 9 hours": 4,
-      },
-    },
-    {
-      id: "main_activity",
-      question: "What best describes your main activity?",
-      options: {
-        "Mostly sedentary": 4,
-        "Light standing/walking": 3,
-        "Moderate activity": 2,
-        "Vigorous activity": 1,
       },
     },
     {

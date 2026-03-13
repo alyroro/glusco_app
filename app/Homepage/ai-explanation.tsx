@@ -1,6 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -12,7 +12,7 @@ import {
   View,
 } from "react-native";
 // Using MaterialIcons as a safer alternative for AI stars
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import supabase from "../api/client";
 import { GeminiResultRetake } from "../types/GeminiTypes";
 
@@ -106,6 +106,27 @@ export default function AIExplanation() {
                 />
               </View>
               <Text style={styles.title}>AI Health Analysis</Text>
+            </View>
+            {/* NEW SECTION: Daily Tasks with Vertical Stack Design */}
+            <Text style={styles.overlaySectionTitle}>Daily Action Plan</Text>
+            <View style={styles.taskStack}>
+              {aiText.daily_tasks?.slice(0, 5).map((task, index) => (
+                <View key={index} style={styles.taskRowCard}>
+                  <View style={styles.taskIconCircleSmall}>
+                    <MaterialCommunityIcons
+                      name={(task.icon as any) || "lightning-bolt"}
+                      size={18}
+                      color="#0B1956"
+                    />
+                  </View>
+                  <View style={styles.taskLabelColumn}>
+                    <Text style={styles.taskLabelRow}>{task.label}</Text>
+                    <Text style={styles.taskLabelRowReasoning}>
+                      {task.reasoning}
+                    </Text>
+                  </View>
+                </View>
+              ))}
             </View>
 
             {/* Summary Card */}
@@ -282,5 +303,59 @@ const styles = StyleSheet.create({
     color: "#0B1956",
     fontSize: 17,
     fontWeight: "700",
+  },
+  taskStack: {
+    flexDirection: "column",
+    gap: 10,
+    marginBottom: 24,
+  },
+  taskIconCircleSmall: {
+    backgroundColor: "#FFFFFF",
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 15, // Gap between icon and text
+  },
+  overlaySectionTitle: {
+    fontSize: 14,
+    fontWeight: "800",
+    color: "#8EABFF",
+    marginBottom: 12,
+    textTransform: "uppercase",
+    letterSpacing: 1.2,
+  },
+  taskLabelColumn: {
+    flex: 1, // Crucial: lets the column fill the width so text can wrap
+    justifyContent: "center",
+  },
+  taskLabelRow: {
+    color: "#FFFFFF",
+    fontSize: 14, // Slightly smaller base font
+    fontWeight: "700",
+    marginBottom: 2, // Small gap before reasoning
+  },
+  taskLabelRowReasoning: {
+    color: "#FFFFFF",
+    fontSize: 12, // Slightly smaller base font
+    fontWeight: "400",
+    marginBottom: 2, // Small gap before reasoning
+  },
+  taskReasoningRow: {
+    color: "rgba(255, 255, 255, 0.7)", // Dimmed for hierarchy
+    fontSize: 12, // Smaller font size
+    fontWeight: "400",
+    lineHeight: 16, // Better readability in tight spaces
+  },
+  taskRowCard: {
+    flexDirection: "row",
+    alignItems: "flex-start", // Changed from 'center' to look better with multi-line text
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.15)",
+    borderRadius: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
   },
 });

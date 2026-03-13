@@ -81,15 +81,16 @@ export default function SleepSubstance({
           </View>
         </View>
 
-        <Text style={styles.title}>How is your sleep and habits?</Text>
+        <Text style={styles.title}>Alcohol Intake</Text>
         <Text style={styles.subtitle}>
-          Share how well you sleep and whether you smoke or drink.
+          Your alcohol consumption can impact your blood sugar levels and
+          overall health.
         </Text>
 
         {/* Sleep Hours Section */}
-        <View style={styles.inputCard}>
+        {/* <View style={styles.inputCard}>
           <Text style={styles.label}>
-            How many hours of sleep did you usually get this week?
+            How many hours of sleep do you usually get?
           </Text>
           {Object.keys(sleepMap).map((option) => (
             <TouchableOpacity
@@ -107,11 +108,11 @@ export default function SleepSubstance({
               <Text style={styles.optionText}>{option}</Text>
             </TouchableOpacity>
           ))}
-        </View>
+        </View> */}
 
         {/* Smoking Section */}
-        <View style={styles.inputCard}>
-          <Text style={styles.label}>Did you smoke cigarettes or vape?</Text>
+        {/* <View style={styles.inputCard}>
+          <Text style={styles.label}>Do you smoke cigarettes or vape?</Text>
           {Object.keys(smokingMap).map((option) => (
             <TouchableOpacity
               key={option}
@@ -128,11 +129,11 @@ export default function SleepSubstance({
               <Text style={styles.optionText}>{option}</Text>
             </TouchableOpacity>
           ))}
-        </View>
+        </View> */}
 
         {/* Alcohol Section */}
         <View style={styles.inputCard}>
-          <Text style={styles.label}>Did you consume alcohol?</Text>
+          <Text style={styles.label}>Do you consume alcohol?</Text>
           {Object.keys(alcoholMap).map((option) => (
             <TouchableOpacity
               key={option}
